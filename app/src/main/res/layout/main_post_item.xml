@@ -59,7 +59,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginEnd="4dp"
         android:drawableStart="@drawable/ic_post_reply"
-        android:text="Time"
+        android:text="ResponseCnt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/mainPostItemSender"
         app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />
@@ -71,7 +71,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginEnd="4dp"
         android:drawableStart="@drawable/ic_post_data"
-        android:text="ResponseCnt"
+        android:text="Date"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/mainPostItemReply"
         app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />

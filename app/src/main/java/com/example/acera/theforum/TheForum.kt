@@ -1,18 +1,31 @@
 package com.example.acera.theforum
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import com.example.acera.theforum.Adapter.RecyclerAdapter
+import com.example.acera.theforum.Adapter.ViewHolder
+import com.example.acera.theforum.Model.Json
 import kotlinx.android.synthetic.main.activity_the_forum.*
 import kotlinx.android.synthetic.main.app_bar_the_forum.*
+import kotlinx.android.synthetic.main.content_the_forum.*
+import java.util.*
 
-class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
+class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener
 {
+
+    private val postList = LinkedList<Json.Post>()
+    private var recyclerAdapter: RecyclerAdapter<Json.Post>? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -31,6 +44,57 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        initRecyclerView()
+        initRefresh()
+    }
+
+    private fun initRecyclerView()
+    {
+        recyclerAdapter = object : RecyclerAdapter<Json.Post>(this, R.layout.main_post_item, postList)
+        {
+            override fun convert(holder: ViewHolder, t: Json.Post)
+            {
+                holder.getView<TextView>(R.id.mainPostItemSender).text = t.username
+                holder.getView<TextView>(R.id.mainPostItemTitle).text = t.p_title
+                holder.getView<TextView>(R.id.mainPostItemContent).text = t.p_content
+                holder.getView<TextView>(R.id.mainPostItemTime).text = t.p_datetime
+                holder.getView<TextView>(R.id.mainPostItemReply).text = t.p_floor.toString()
+            }
+        }
+
+        recyclerAdapter!!.setOnItemClickListener(object : RecyclerAdapter.OnItemClickListener
+        {
+            override fun onClick(view: View, position: Int)
+            {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onLongClick(view: View, position: Int)
+            {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        })
+
+        mainPostView.adapter = recyclerAdapter
+        mainPostView.layoutManager = LinearLayoutManager(this)
+        mainPostView.itemAnimator = DefaultItemAnimator()
+    }
+
+    private fun initRefresh()
+    {
+        mainPostRefresh.setColorSchemeResources(
+                R.color.material_light_blue_700,
+                R.color.material_red_700,
+                R.color.material_orange_700,
+                R.color.material_light_green_700)
+        mainPostRefresh.setOnRefreshListener(this)
+    }
+
+
+    override fun onRefresh()
+    {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onBackPressed()
@@ -97,4 +161,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
 }

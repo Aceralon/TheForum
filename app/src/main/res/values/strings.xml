@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">The Forum</string>
 
+    <string name="fab_behavior">com.example.acera.theforum.Behavior.ScrollAwareFABBehavior</string>
+
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
