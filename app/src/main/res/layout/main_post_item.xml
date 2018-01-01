@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/mainPostItemTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/mainPostItemHeaderLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <TextView
+        android:id="@+id/mainPostItemContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="Content"
+        app:layout_constraintBottom_toTopOf="@id/mainPostItemFooterLine"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mainPostItemHeaderLine" />
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/mainPostItemFooterLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="20dp"
+        app:layout_constraintTop_toBottomOf="@id/mainPostItemContent" />
+
+
+    <TextView
+        android:id="@+id/mainPostItemSender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:drawableStart="@drawable/ic_post_person"
+        android:text="Sender"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />
+
+    <TextView
+        android:id="@+id/mainPostItemReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="4dp"
+        android:drawableStart="@drawable/ic_post_reply"
+        android:text="Time"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/mainPostItemSender"
+        app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />
+
+    <TextView
+        android:id="@+id/mainPostItemTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="4dp"
+        android:drawableStart="@drawable/ic_post_data"
+        android:text="ResponseCnt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/mainPostItemReply"
+        app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />
+
+</android.support.constraint.ConstraintLayout>
