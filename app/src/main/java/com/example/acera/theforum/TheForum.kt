@@ -1,5 +1,6 @@
 package com.example.acera.theforum
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -49,6 +50,12 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         initRefresh()
     }
 
+    fun clickHeaderIcon(view: View)
+    {
+        val myIntent = Intent(this, LoginActivity::class.java)
+        startActivity(myIntent)
+    }
+
     private fun initRecyclerView()
     {
         recyclerAdapter = object : RecyclerAdapter<Json.Post>(this, R.layout.main_post_item, postList)
@@ -79,6 +86,26 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         mainPostView.adapter = recyclerAdapter
         mainPostView.layoutManager = LinearLayoutManager(this)
         mainPostView.itemAnimator = DefaultItemAnimator()
+
+
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+
+        recyclerAdapter!!.notifyItemRangeInserted(0, postList.size)
     }
 
     private fun initRefresh()
