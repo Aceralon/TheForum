@@ -10,10 +10,12 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.Json
@@ -27,6 +29,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     private val postList = LinkedList<Json.Post>()
     private var recyclerAdapter: RecyclerAdapter<Json.Post>? = null
+    private val layoutManager = LinearLayoutManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -58,7 +61,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     private fun initRecyclerView()
     {
-        recyclerAdapter = object : RecyclerAdapter<Json.Post>(this, R.layout.main_post_item, postList)
+        recyclerAdapter = object : RecyclerAdapter<Json.Post>(this, R.layout.main_post_item, postList as List<Json.Post>)
         {
             override fun convert(holder: ViewHolder, t: Json.Post)
             {
@@ -84,9 +87,34 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         })
 
         mainPostView.adapter = recyclerAdapter
-        mainPostView.layoutManager = LinearLayoutManager(this)
+        mainPostView.layoutManager = layoutManager
         mainPostView.itemAnimator = DefaultItemAnimator()
-
+//        mainPostView.scroll
+        mainPostView.addOnScrollListener(object : RecyclerView.OnScrollListener()
+        {
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int)
+            {
+                // 当不滚动时
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                {
+                    if (!recyclerView!!.canScrollVertically(1))
+                    {
+                        Toast.makeText(this@TheForum, "End to Load", Toast.LENGTH_SHORT).show()
+                        //加载更多功能的代码
+                        //TODO(Load more posts)
+                        //loadTopic(currentPage + 1, false)
+                    }
+                    //获取最后一个完全显示的ItemPosition
+//                    val lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition()
+//                    val totalItemCount = layoutManager.getItemCount()
+//                    // 判断是否滚动到底部，并且是向右滚动
+//                    if (lastVisibleItem >= totalItemCount - 5)
+//                    {//&& enableScrollListener && currentPage < totalPage
+//
+//                    }
+                }
+            }
+        })
 
         postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
         postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
@@ -118,10 +146,10 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         mainPostRefresh.setOnRefreshListener(this)
     }
 
-
     override fun onRefresh()
     {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented")
+        // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onBackPressed()
@@ -138,7 +166,12 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     override fun onCreateOptionsMenu(menu: Menu): Boolean
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.the_forum, menu)
+//        menuInflater.inflate(R.menu.the_forum, menu)
+        val item = menu.add(0, Menu.FIRST, 100, "Start")
+
+//        menu.add(0, Menu.FIRST, 10, "Hi")
+//        item.icon = getDrawable(R.drawable.ic_post_person)
+//        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return true
     }
 
@@ -147,10 +180,20 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId)
+        return when (item.itemId)
         {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+            R.id.action_settings ->
+            {
+                val myIntent = Intent(this, SettingsActivity::class.java)
+                startActivity(myIntent)
+                true
+            }
+            R.id.action_test ->
+            {
+                Toast.makeText(this, "TEST", Toast.LENGTH_LONG).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -162,26 +205,30 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.nav_camera ->
             {
                 // Handle the camera action
+                Toast.makeText(this, "camera", Toast.LENGTH_LONG).show()
             }
             R.id.nav_gallery ->
             {
-
+                Toast.makeText(this, "gallery", Toast.LENGTH_LONG).show()
             }
             R.id.nav_slideshow ->
             {
-
+                Toast.makeText(this, "slideshow", Toast.LENGTH_LONG).show()
             }
             R.id.nav_manage ->
             {
+                Toast.makeText(this, "manage", Toast.LENGTH_LONG).show()
 
             }
             R.id.nav_share ->
             {
-
+                val myIntent = Intent(this, RegisterActivity::class.java)
+                startActivity(myIntent)
+                Toast.makeText(this, "share", Toast.LENGTH_LONG).show()
             }
             R.id.nav_send ->
             {
-
+                Toast.makeText(this, "send", Toast.LENGTH_LONG).show()
             }
         }
 

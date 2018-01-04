@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/action_test"
-        android:icon="@drawable/ic_post_data"
+        android:icon="@drawable/ic_post_date"
         android:orderInCategory="0"
         android:title="TEST"
         app:showAsAction="ifRoom" />

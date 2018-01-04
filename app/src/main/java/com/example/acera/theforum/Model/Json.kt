@@ -19,6 +19,4 @@ class Json
     data class Comment(val username: String, val c_content: String, val c_datetime: String) : Serializable
 
     data class Comments(val comments: List<Comment>)
-
-
 }
