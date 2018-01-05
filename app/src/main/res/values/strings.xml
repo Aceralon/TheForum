@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">The Forum</string>
 
+    <string name="goto_post_detail">POST_DETAIL</string>
+
+
     <string name="fab_behavior">com.example.acera.theforum.Behavior.ScrollAwareFABBehavior</string>
 
     <item name="visible" type="id" />
@@ -99,4 +102,5 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_basci">BasciActivity</string>
+    <string name="title_activity_post">PostActivity</string>
 </resources>

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +23,7 @@ import com.example.acera.theforum.Model.Json
 import kotlinx.android.synthetic.main.activity_the_forum.*
 import kotlinx.android.synthetic.main.app_bar_the_forum.*
 import kotlinx.android.synthetic.main.content_the_forum.*
+import java.lang.Exception
 import java.util.*
 
 class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener
@@ -30,6 +32,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private val postList = LinkedList<Json.Post>()
     private var recyclerAdapter: RecyclerAdapter<Json.Post>? = null
     private val layoutManager = LinearLayoutManager(this)
+    private var startItem: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -47,10 +50,12 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        nav_view.setNavigationItemSelectedListener(this)
+        navView.setNavigationItemSelectedListener(this)
 
         initRecyclerView()
         initRefresh()
+
+        startItem = navView.menu.add(0, Menu.FIRST, 100, "Start")
     }
 
     fun clickHeaderIcon(view: View)
@@ -77,12 +82,17 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         {
             override fun onClick(view: View, position: Int)
             {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //goto the post detail
+                val myIntent = Intent(this@TheForum, PostActivity::class.java)
+                myIntent.putExtra(getString(R.string.goto_post_detail), postList[position])
+                startActivity(myIntent)
             }
 
             override fun onLongClick(view: View, position: Int)
             {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //see if need long click or just do nothing
             }
         })
 
@@ -113,6 +123,19 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 //
 //                    }
                 }
+                //修正ripple效果
+                try
+                {
+                    val firstPosition = layoutManager.findFirstVisibleItemPosition()
+                    mainPostRefresh.isEnabled = (firstPosition == 0)
+                    Log.i("refresh", "State - $newState : firstVisiblePosition$firstPosition")
+                    Log.i("refresh", "enable: ${mainPostRefresh.isEnabled}")
+                } catch (e: Exception)
+                {
+                    e.printStackTrace()
+                }
+
+                super.onScrollStateChanged(recyclerView, newState)
             }
         })
 
@@ -170,8 +193,8 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         val item = menu.add(0, Menu.FIRST, 100, "Start")
 
 //        menu.add(0, Menu.FIRST, 10, "Hi")
-//        item.icon = getDrawable(R.drawable.ic_post_person)
-//        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        item.icon = getDrawable(R.drawable.ic_post_person)
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return true
     }
 
@@ -229,6 +252,10 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.nav_send ->
             {
                 Toast.makeText(this, "send", Toast.LENGTH_LONG).show()
+            }
+            startItem!!.itemId ->
+            {
+                Toast.makeText(this, "start", Toast.LENGTH_LONG).show()
             }
         }
 

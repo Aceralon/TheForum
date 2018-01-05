@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:onClick="loginButtonClick"
-        android:text="Login"
+        android:text="Log in"
         android:textColor="@color/material_white_1000"
         app:layout_constraintLeft_toLeftOf="@id/loginPasswordLayout"
         app:layout_constraintRight_toRightOf="@id/loginPasswordLayout"

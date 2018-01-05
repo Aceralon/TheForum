@@ -22,17 +22,18 @@
             android:title="Tools" />
     </group>
 
-    <item android:title="Communicate">
+    <item
+        android:id="@+id/nav_title"
+        android:title="Not Loged in?">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Register" />
-            <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Logout" />
+                android:icon="@drawable/ic_drawer_login"
+                android:title="Log in" />
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_drawer_register"
+                android:title="Register" />
         </menu>
     </item>
-
 </menu>
