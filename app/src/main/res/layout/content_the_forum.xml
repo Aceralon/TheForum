@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     tools:context="com.example.acera.theforum.TheForum"
     tools:showIn="@layout/app_bar_the_forum">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/mainPostRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mainPostView"
