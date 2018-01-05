@@ -139,6 +139,9 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             }
         })
 
+
+
+
         postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
         postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
         postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
@@ -243,15 +246,17 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 Toast.makeText(this, "manage", Toast.LENGTH_LONG).show()
 
             }
-            R.id.nav_share ->
+            R.id.nav_register ->
             {
                 val myIntent = Intent(this, RegisterActivity::class.java)
                 startActivity(myIntent)
-                Toast.makeText(this, "share", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "register", Toast.LENGTH_LONG).show()
             }
-            R.id.nav_send ->
+            R.id.nav_login ->
             {
-                Toast.makeText(this, "send", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "login", Toast.LENGTH_LONG).show()
+                val myIntent = Intent(this@TheForum, LoginActivity::class.java)
+                startActivityForResult(myIntent, resources.getInteger(R.integer.request_login))
             }
             startItem!!.itemId ->
             {
@@ -263,5 +268,28 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         return true
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        when (requestCode)
+        {
+            resources.getInteger(R.integer.request_login) ->
+            {
+                when (resultCode)
+                {
+                    resources.getInteger(R.integer.login_sucess) ->
+                    {
+
+                    }
+                    resources.getInteger(R.integer.login_failed) ->
+                    {
+
+                    }
+                }
+
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
 }

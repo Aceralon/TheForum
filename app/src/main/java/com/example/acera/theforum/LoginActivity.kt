@@ -22,7 +22,6 @@ class LoginActivity : AppCompatActivity()
                 getColor(R.color.material_light_green_700))
     }
 
-
     fun loginButtonClick(view: View)
     {
         loginUserLayout.error = null
@@ -70,5 +69,10 @@ class LoginActivity : AppCompatActivity()
             finish()
 
         }
+    }
+
+    fun loginAction(username: String, userPassword: String)
+    {
+
     }
 }
