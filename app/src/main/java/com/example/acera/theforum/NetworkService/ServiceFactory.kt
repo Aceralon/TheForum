@@ -1,6 +1,5 @@
-package com.example.acera.theforum
+package com.example.acera.theforum.NetworkService
 
-import com.example.acera.theforum.Model.Json
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -14,12 +13,11 @@ import java.util.concurrent.TimeUnit
 
 object ServiceFactory
 {
-
     val myService = getService("https://simpletieba.mtzero.org/functions/Interface.jsp?intent=")
 
     private fun getService(url: String): TiebaService
     {
-        return ServiceFactory.createRetrofit(url).create(TiebaService::class.java)
+        return createRetrofit(url).create(TiebaService::class.java)
     }
 
     private fun createRetrofit(baseUrl: String): Retrofit

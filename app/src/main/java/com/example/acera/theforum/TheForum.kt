@@ -66,7 +66,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     private fun initRecyclerView()
     {
-        recyclerAdapter = object : RecyclerAdapter<Json.Post>(this, R.layout.main_post_item, postList as List<Json.Post>)
+        recyclerAdapter = object : RecyclerAdapter<Json.Post>(this, R.layout.main_post_item, postList)
         {
             override fun convert(holder: ViewHolder, t: Json.Post)
             {

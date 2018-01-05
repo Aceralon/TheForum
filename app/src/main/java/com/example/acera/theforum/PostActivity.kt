@@ -14,21 +14,14 @@ class PostActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
-        setSupportActionBar(postToolbar)
+        setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
-            gotoReply()
+            val myIntent = Intent(this@PostActivity, ReplyActivity::class.java)
+            startActivity(myIntent)
         }
-
-        //todo load designated content
-    }
-
-    private fun gotoReply()
-    {
-        val myIntent = Intent(this, ReplyActivity::class.java)
-        startActivityForResult(myIntent, resources.getInteger(R.integer.request_reply_post))
     }
 
 }
