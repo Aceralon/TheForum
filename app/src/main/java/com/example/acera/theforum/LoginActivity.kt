@@ -1,6 +1,8 @@
 package com.example.acera.theforum
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
@@ -15,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity()
 {
+    var token: Json.MessageToken? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -64,7 +67,7 @@ class LoginActivity : AppCompatActivity()
         }
     }
 
-    fun loginAction(username: String, userPassword: String)
+    private fun loginAction(username: String, userPassword: String)
     {
         ServiceFactory.myService
                 .signIn(Json.User(null, username, userPassword, null, null))
@@ -74,33 +77,24 @@ class LoginActivity : AppCompatActivity()
                 {
                     override fun onNext(t: Json.MessageToken)
                     {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        token = t
                     }
 
                     override fun onError(e: Throwable)
                     {
-                        Toast.makeText(this@LoginActivity, "Login Failed", Toast.LENGTH_SHORT).show()
-                        loginButton.progress = -1
-                        loginButton.isEnabled = true
-                        loginUserLayout.isEnabled = true
-                        loginPasswordLayout.isEnabled = true
-                        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        loginFailed("Login Failed")
+                        e.printStackTrace()
                     }
 
                     override fun onComplete()
                     {
-                        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                        if (true)
+                        if (token!!.state == "1")//login failed
+                        {
+                            loginFailed(token!!.message)
+                        } else
                         {
                             loginButton.progress = 100
-                            try
-                            {
-                                Thread.sleep(2000)
-                            } catch (e: InterruptedException)
-                            {
-                                e.printStackTrace()
-                            }
-                            finish()
+                            Handler().postDelayed({ exitActivity(true) }, 1500)
                         }
                     }
 
@@ -110,10 +104,38 @@ class LoginActivity : AppCompatActivity()
                         loginButton.isEnabled = false
                         loginUserLayout.isEnabled = false
                         loginPasswordLayout.isEnabled = false
-                        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
                 })
-
     }
+
+    override fun onBackPressed()
+    {
+        exitActivity(false)
+    }
+
+    private fun exitActivity(success: Boolean)
+    {
+        if (success)
+        {
+            val dataIntent = Intent()
+            dataIntent.putExtra(getString(R.string.token), token!!)
+            setResult(resources.getInteger(R.integer.login_sucess))
+
+        } else
+        {
+            setResult(resources.getInteger(R.integer.login_failed))
+        }
+        finish()
+    }
+
+    private fun loginFailed(message: String)
+    {
+        Toast.makeText(this@LoginActivity, message, Toast.LENGTH_SHORT).show()
+        loginButton.progress = -1
+        loginButton.isEnabled = true
+        loginUserLayout.isEnabled = true
+        loginPasswordLayout.isEnabled = true
+    }
+
 }

@@ -34,6 +34,6 @@ class Json
 
     data class MessageComments(val state: String, val message: String, val data: Comments?)
 
-    data class MessageToken(val state: String, val message: String, val data: Token?)
+    data class MessageToken(val state: String, val message: String, val data: Token?) : Serializable
 
 }

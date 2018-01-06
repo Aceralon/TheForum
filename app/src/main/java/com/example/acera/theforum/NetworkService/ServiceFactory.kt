@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object ServiceFactory
 {
-    val myService = getService("https://simpletieba.mtzero.org/functions/Interface.jsp?intent=")
+    val myService = getService("https://simpletieba.mtzero.org/functions/")
 
     private fun getService(url: String): TiebaService
     {

@@ -99,7 +99,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         mainPostView.adapter = recyclerAdapter
         mainPostView.layoutManager = layoutManager
         mainPostView.itemAnimator = DefaultItemAnimator()
-//        mainPostView.scroll
         mainPostView.addOnScrollListener(object : RecyclerView.OnScrollListener()
         {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int)
@@ -138,9 +137,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
-
-
-
 
         postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
         postList.add(Json.Post("aa", "bb", "CC", "DD", 0))

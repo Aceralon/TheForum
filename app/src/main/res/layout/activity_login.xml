@@ -31,6 +31,7 @@
             android:id="@+id/loginUser"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
@@ -63,7 +64,7 @@
         app:layout_constraintLeft_toLeftOf="@id/loginPasswordLayout"
         app:layout_constraintRight_toRightOf="@id/loginPasswordLayout"
         app:layout_constraintTop_toBottomOf="@id/loginPasswordLayout"
-        app:pb_colorComplete="@color/material_white_1000"
+        app:pb_colorComplete="@color/material_green_400"
         app:pb_colorNormal="@color/material_orange_400"
         app:pb_colorProgress="@color/material_orange_400"
         app:pb_textComplete="Success"
