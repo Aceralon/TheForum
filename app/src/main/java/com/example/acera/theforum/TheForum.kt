@@ -20,9 +20,15 @@ import android.widget.Toast
 import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.Json
+import com.example.acera.theforum.NetworkService.ServiceFactory
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_the_forum.*
 import kotlinx.android.synthetic.main.app_bar_the_forum.*
 import kotlinx.android.synthetic.main.content_the_forum.*
+import kotlinx.android.synthetic.main.nav_header_the_forum.*
 import java.lang.Exception
 import java.util.*
 
@@ -33,6 +39,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private var recyclerAdapter: RecyclerAdapter<Json.Post>? = null
     private val layoutManager = LinearLayoutManager(this)
     private var startItem: MenuItem? = null
+    private var token: Json.Token? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -106,12 +113,12 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 // 当不滚动时
                 if (newState == RecyclerView.SCROLL_STATE_IDLE)
                 {
-                    if (!recyclerView!!.canScrollVertically(1))
+                    if (!recyclerView!!.canScrollVertically(1) && layoutManager.findFirstCompletelyVisibleItemPosition() != 0)
                     {
                         Toast.makeText(this@TheForum, "End to Load", Toast.LENGTH_SHORT).show()
-                        //加载更多功能的代码
+                        //加载更多 功能的代码
                         //TODO(Load more posts)
-                        //loadTopic(currentPage + 1, false)
+                        loadPages(postList.last.p_datetime!!, 10, false)
                     }
                     //获取最后一个完全显示的ItemPosition
 //                    val lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition()
@@ -138,24 +145,86 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             }
         })
 
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+        loadPages(Json.getCurrentTime(), 20, true)
+
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
 
         recyclerAdapter!!.notifyItemRangeInserted(0, postList.size)
+    }
+
+    private fun loadPages(startTime: String, postsLimit: Int, newer: Boolean)
+    {
+        var postCnt = 0
+        ServiceFactory.myService.
+                getPostsByTime(Json.PostsRequest(startTime, postsLimit))
+                .subscribeOn((Schedulers.io()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<Json.MessagePosts>
+                {
+                    override fun onError(e: Throwable)
+                    {
+                        Toast.makeText(this@TheForum, "Load Failed", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onSubscribe(d: Disposable)
+                    {
+                        if (newer)
+                            mainPostRefresh.isRefreshing = true
+                        postCnt = 0
+                    }
+
+                    override fun onNext(t: Json.MessagePosts)
+                    {
+                        if (t.state == "1")
+                        {
+                            Toast.makeText(this@TheForum, t.message, Toast.LENGTH_SHORT).show()
+                            onComplete()
+                        }
+
+                        if (newer)
+                        {
+                            val newestTime =
+                                    if (postList.isNotEmpty() && postList.first.p_datetime!! != "DD")//DEBUG only
+                                        Json.timeToLong(postList.first.p_datetime!!)
+                                    else
+                                        0
+                            for (post in t.data!!.posts!!.asReversed())
+                            {
+                                if (Json.timeToLong(post.p_datetime!!) > newestTime)
+                                {
+                                    postList.add(0, post)
+                                    postCnt++
+                                }
+                            }
+                        } else
+                        {
+                            postList.addAll(postList.size - 1, t.data!!.posts!!)
+                            postCnt += t.data.posts!!.size
+                        }
+
+                    }
+
+                    override fun onComplete()
+                    {
+                        mainPostRefresh.isRefreshing = false
+                        if (newer)
+                        {
+                            recyclerAdapter!!.notifyItemRangeInserted(0, postCnt)
+                            layoutManager.scrollToPosition(0)
+                        } else
+                            recyclerAdapter!!.notifyItemRangeInserted(postList.size - postCnt, postCnt)
+
+                    }
+
+                })
     }
 
     private fun initRefresh()
@@ -171,7 +240,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     override fun onRefresh()
     {
         //TODO("not implemented")
-        // To change body of created functions use File | Settings | File Templates.
+        loadPages(postList.first.p_datetime!!, 5, true)
     }
 
     override fun onBackPressed()
@@ -268,15 +337,16 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     {
         when (requestCode)
         {
-            resources.getInteger(R.integer.request_login) ->
+            resources.getInteger(R.integer.request_login) ->//request login
             {
                 when (resultCode)
                 {
-                    resources.getInteger(R.integer.login_sucess) ->
+                    resources.getInteger(R.integer.login_sucess) ->//logged in
                     {
-
+                        token = data!!.getSerializableExtra(getString(R.string.token)) as Json.Token
+                        drawerUsername.text = token!!.username
                     }
-                    resources.getInteger(R.integer.login_failed) ->
+                    resources.getInteger(R.integer.login_failed) ->//not login
                     {
 
                     }
@@ -284,8 +354,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
             }
         }
-
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }

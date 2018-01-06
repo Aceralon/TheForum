@@ -31,8 +31,8 @@
         <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ReplyActivity" />
+            android:theme="@style/AppTheme.NoActionBarMod" />
+        <activity android:name=".EditActivity" />
     </application>
 
 </manifest>

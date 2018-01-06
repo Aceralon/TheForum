@@ -2,7 +2,6 @@ package com.example.acera.theforum
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
@@ -94,7 +93,7 @@ class LoginActivity : AppCompatActivity()
                         } else
                         {
                             loginButton.progress = 100
-                            Handler().postDelayed({ exitActivity(true) }, 1500)
+                            exitActivity(true)
                         }
                     }
 
@@ -119,7 +118,7 @@ class LoginActivity : AppCompatActivity()
         if (success)
         {
             val dataIntent = Intent()
-            dataIntent.putExtra(getString(R.string.token), token!!)
+            dataIntent.putExtra(getString(R.string.token), token!!.data!!)
             setResult(resources.getInteger(R.integer.login_sucess))
 
         } else

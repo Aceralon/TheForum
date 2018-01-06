@@ -3,12 +3,14 @@ package com.example.acera.theforum
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
-class ReplyActivity : AppCompatActivity()
+class EditActivity : AppCompatActivity()
 {
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reply)
+        setContentView(R.layout.activity_edit)
+
+
     }
 }
