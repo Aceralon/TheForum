@@ -2,6 +2,7 @@ package com.example.acera.theforum
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
@@ -93,7 +94,7 @@ class LoginActivity : AppCompatActivity()
                         } else
                         {
                             loginButton.progress = 100
-                            exitActivity(true)
+                            Handler().postDelayed({ exitActivity(true) }, 1500)
                         }
                     }
 

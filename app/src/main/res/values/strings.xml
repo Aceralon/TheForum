@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">The Forum</string>
 
+
     <string name="goto_post_detail">POST_DETAIL</string>
     <string name="token">TOKEN</string>
+    <string name="edit_intent">EDIT</string>
+    <string name="if_logged_in">LOGIN</string>
 
     <string name="fab_behavior">com.example.acera.theforum.Behavior.ScrollAwareFABBehavior</string>
 

@@ -3,7 +3,6 @@ package com.example.acera.theforum
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -45,15 +44,16 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_the_forum)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(postDetailToolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        fab.setOnClickListener {
+            val myIntent = Intent(this, EditActivity::class.java)
+            myIntent.putExtra(getString(R.string.edit_intent), resources.getInteger(R.integer.edit_new_post))
+            startActivity(myIntent)
         }
 
         val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+                this, drawer_layout, postDetailToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -89,8 +89,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         {
             override fun onClick(view: View, position: Int)
             {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                //goto the post detail
                 val myIntent = Intent(this@TheForum, PostActivity::class.java)
                 myIntent.putExtra(getString(R.string.goto_post_detail), postList[position])
                 startActivity(myIntent)

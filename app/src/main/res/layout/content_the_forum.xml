@@ -11,7 +11,7 @@
         android:id="@+id/mainPostRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="50dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mainPostView"
@@ -19,7 +19,8 @@
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
             android:foreground="?android:attr/selectableItemBackground"
-            android:overScrollMode="always" />
+            android:overScrollMode="always"
+            android:paddingTop="10dp" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.constraint.ConstraintLayout>
