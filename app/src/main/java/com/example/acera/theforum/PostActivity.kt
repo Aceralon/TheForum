@@ -55,6 +55,7 @@ class PostActivity : AppCompatActivity()
                 val myIntent = Intent(this, EditActivity::class.java)
                 myIntent.putExtra(getString(R.string.edit_intent), resources.getInteger(R.integer.edit_reply))
                 myIntent.putExtra(getString(R.string.token), token)
+                myIntent.putExtra("pid", post!!.pid)
                 startActivityForResult(myIntent, resources.getInteger(R.integer.edit_reply))
             }
         }

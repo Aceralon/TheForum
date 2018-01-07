@@ -175,9 +175,12 @@ class EditActivity : AppCompatActivity()
                             {
                                 titleEditText.isEnabled = true
                                 editEditText.isEnabled = true
-                                if (message!!.state != "0")
+                                if (message!!.state == "0")
                                 {
                                     Toast.makeText(this@EditActivity, "Posted successfully!", Toast.LENGTH_SHORT).show()
+                                    val myIntent = Intent(this@EditActivity, PostActivity::class.java)
+                                    myIntent.putExtra("success", true)
+                                    startActivity(myIntent)
                                     finish()
                                 } else
                                 {
