@@ -2,7 +2,6 @@ package com.example.acera.theforum
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
@@ -53,8 +52,6 @@ class PostActivity : AppCompatActivity()
         } else
         {
             fab.setOnClickListener { view ->
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
                 val myIntent = Intent(this, EditActivity::class.java)
                 myIntent.putExtra(getString(R.string.edit_intent), resources.getInteger(R.integer.edit_reply))
                 myIntent.putExtra(getString(R.string.token), token)

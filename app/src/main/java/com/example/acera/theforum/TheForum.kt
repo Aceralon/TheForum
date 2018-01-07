@@ -46,6 +46,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         fab.setOnClickListener {
             val myIntent = Intent(this, EditActivity::class.java)
             myIntent.putExtra(getString(R.string.edit_intent), resources.getInteger(R.integer.edit_new_post))
+            myIntent.putExtra(getString(R.string.token), token)
             startActivity(myIntent)
         }
         val toggle = ActionBarDrawerToggle(

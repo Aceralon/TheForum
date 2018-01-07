@@ -14,7 +14,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_edit.*
-import java.util.*
 
 class EditActivity : AppCompatActivity()
 {
@@ -27,7 +26,6 @@ class EditActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
-
 
         when (intent.getIntExtra(getString(R.string.edit_intent), 0))
         {
@@ -44,7 +42,7 @@ class EditActivity : AppCompatActivity()
                 title = "Reply"
                 titleEditText.isFocusable = false
                 titleEditText.isFocusableInTouchMode = false
-                titleEditText.visibility = View.INVISIBLE
+                titleEditText.visibility = View.GONE
             }
             0 -> finish()
         }

@@ -47,7 +47,7 @@ interface TiebaService
     fun addComment(@Body data: Json.Comment,
                    @Header("token") token: String): Observable<Json.Message>
 
-    // data -> Json.Comment cid
+    // data -> Json.Comment cidD
     @POST("Interface.jsp?intent=delete_comment")
     fun deleteComment(@Body data: Json.Comment,
                       @Header("token") token: String): Observable<Json.Message>
