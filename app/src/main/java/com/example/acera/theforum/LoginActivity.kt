@@ -128,7 +128,7 @@ class LoginActivity : AppCompatActivity()
         {
             val dataIntent = Intent()
             dataIntent.putExtra(getString(R.string.token), token!!.data!!)
-            setResult(resources.getInteger(R.integer.login_sucess))
+            setResult(resources.getInteger(R.integer.login_sucess), dataIntent)
 
         } else
         {

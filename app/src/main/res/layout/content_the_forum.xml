@@ -17,8 +17,6 @@
             android:id="@+id/mainPostView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackground"
-            android:foreground="?android:attr/selectableItemBackground"
             android:overScrollMode="always"
             android:paddingTop="10dp" />
     </android.support.v4.widget.SwipeRefreshLayout>

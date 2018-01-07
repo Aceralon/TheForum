@@ -7,6 +7,10 @@
     <string name="edit_intent">EDIT</string>
     <string name="if_logged_in">LOGIN</string>
     <string name="userName">USERNAME</string>
+    <string name="myPreference">PREFERENCE</string>
+    <string name="token_token">TOKEN_TOKEN</string>
+    <string name="token_username">TOKEN_USERNAME</string>
+    <string name="token_expiration">TOKEN_expiration</string>
 
     <string name="fab_behavior">com.example.acera.theforum.Behavior.ScrollAwareFABBehavior</string>
 

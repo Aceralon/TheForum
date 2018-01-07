@@ -1,5 +1,6 @@
 package com.example.acera.theforum
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -10,7 +11,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -28,7 +28,6 @@ import kotlinx.android.synthetic.main.activity_the_forum.*
 import kotlinx.android.synthetic.main.app_bar_the_forum.*
 import kotlinx.android.synthetic.main.content_the_forum.*
 import kotlinx.android.synthetic.main.nav_header_the_forum.*
-import java.lang.Exception
 import java.util.*
 
 class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener
@@ -62,7 +61,62 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         initRecyclerView()
         initRefresh()
 
-        startItem = navView.menu.add(0, Menu.FIRST, 100, "Start")
+//        startItem = navView.menu.add(0, Menu.FIRST, 100, "Start")
+    }
+
+    private fun checkTokenExpiration(): Json.Token?
+    {
+        val preference = getSharedPreferences(getString(R.string.myPreference), Context.MODE_PRIVATE)
+        val tokenStr = preference.getString(getString(R.string.token_token), "")
+        val nameStr = preference.getString(getString(R.string.token_username), "")
+        val expLong = preference.getLong(getString(R.string.token_expiration), -1)
+        return if (System.currentTimeMillis() < expLong)
+        {
+            Json.Token(tokenStr, expLong, nameStr)
+        } else
+        {
+            clearToken()
+            null
+        }
+    }
+
+    private fun saveToken(token: Json.Token)
+    {
+        val myEdit = getSharedPreferences(getString(R.string.myPreference), Context.MODE_PRIVATE).edit()
+        myEdit.putString(getString(R.string.token_token), token.token)
+        myEdit.putString(getString(R.string.token_username), token.username)
+        myEdit.putLong(getString(R.string.token_expiration), token.expiration!!)
+        myEdit.apply()
+    }
+
+    private fun clearToken()
+    {
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode)
+        {
+            resources.getInteger(R.integer.request_login) ->//request login
+            {
+                when (resultCode)
+                {
+                    resources.getInteger(R.integer.login_sucess) ->//logged in
+                    {
+                        token = data!!.getSerializableExtra(getString(R.string.token)) as Json.Token
+                        drawerUsername.text = token!!.username
+                        navView.inflateMenu(R.menu.activity_the_forum_logged_in)
+                    }
+                    resources.getInteger(R.integer.login_failed) ->//not login
+                    {
+                        Toast.makeText(this, "Not", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
+        }
     }
 
     fun clickHeaderIcon(view: View)
@@ -80,7 +134,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 holder.getView<TextView>(R.id.mainPostItemSender).text = t.username
                 holder.getView<TextView>(R.id.mainPostItemTitle).text = t.p_title
                 holder.getView<TextView>(R.id.mainPostItemContent).text = t.p_content
-                holder.getView<TextView>(R.id.mainPostItemTime).text = t.p_datetime
+                holder.getView<TextView>(R.id.mainPostItemTime).text = t.p_datetime!!.substring(0, 9)
                 holder.getView<TextView>(R.id.mainPostItemReply).text = t.p_floor.toString()
             }
         }
@@ -113,9 +167,8 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 {
                     if (!recyclerView!!.canScrollVertically(1) && layoutManager.findFirstCompletelyVisibleItemPosition() != 0)
                     {
-                        Toast.makeText(this@TheForum, "End to Load", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this@TheForum, "End to Load", Toast.LENGTH_SHORT).show()
                         //加载更多 功能的代码
-                        //TODO(Load more posts)
                         loadPages(postList.last.p_datetime!!, 10, false)
                     }
                     //获取最后一个完全显示的ItemPosition
@@ -128,16 +181,16 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 //                    }
                 }
                 //修正ripple效果
-                try
-                {
-                    val firstPosition = layoutManager.findFirstVisibleItemPosition()
-                    mainPostRefresh.isEnabled = (firstPosition == 0)
-                    Log.i("refresh", "State - $newState : firstVisiblePosition$firstPosition")
-                    Log.i("refresh", "enable: ${mainPostRefresh.isEnabled}")
-                } catch (e: Exception)
-                {
-                    e.printStackTrace()
-                }
+//                try
+//                {
+//                    val firstPosition = layoutManager.findFirstVisibleItemPosition()
+//                    mainPostRefresh.isEnabled = (firstPosition == 0)
+//                    Log.i("refresh", "State - $newState : firstVisiblePosition$firstPosition")
+//                    Log.i("refresh", "enable: ${mainPostRefresh.isEnabled}")
+//                } catch (e: Exception)
+//                {
+//                    e.printStackTrace()
+//                }
 
                 super.onScrollStateChanged(recyclerView, newState)
             }
@@ -145,7 +198,15 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         loadPages(Json.getCurrentTime(), 20, true)
 
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0)) DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
 
         recyclerAdapter!!.notifyItemRangeInserted(0, postList.size)
     }
@@ -229,7 +290,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     override fun onRefresh()
     {
-        //TODO("not implemented")
         loadPages(postList.first.p_datetime!!, 5, true)
     }
 
@@ -248,11 +308,13 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     {
         // Inflate the menu; this adds items to the action bar if it is present.
 //        menuInflater.inflate(R.menu.the_forum, menu)
-        val item = menu.add(0, Menu.FIRST, 100, "Start")
-
-//        menu.add(0, Menu.FIRST, 10, "Hi")
-        item.icon = getDrawable(R.drawable.ic_post_person)
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+//        val item = menu.add(0, Menu.FIRST, 100, "Start")
+//        menu.add(0, Menu.FIRST + 1, 20, "DONE")
+////        val subM = menu.addSubMenu("HIHI")
+////        subM.add("GOOD")
+////        menu.add(0, Menu.FIRST, 10, "Hi")
+//        item.icon = getDrawable(R.drawable.ic_post_person)
+//        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return true
     }
 
@@ -301,15 +363,17 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 //                Toast.makeText(this, "manage", Toast.LENGTH_LONG).show()
 //
 //            }
+            R.id.nav_logout ->
+            {
+
+            }
             R.id.nav_register ->
             {
                 val myIntent = Intent(this, RegisterActivity::class.java)
                 startActivity(myIntent)
-                Toast.makeText(this, "register", Toast.LENGTH_LONG).show()
             }
             R.id.nav_login ->
             {
-                Toast.makeText(this, "login", Toast.LENGTH_LONG).show()
                 val myIntent = Intent(this@TheForum, LoginActivity::class.java)
                 startActivityForResult(myIntent, resources.getInteger(R.integer.request_login))
             }
@@ -322,28 +386,4 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    {
-        when (requestCode)
-        {
-            resources.getInteger(R.integer.request_login) ->//request login
-            {
-                when (resultCode)
-                {
-                    resources.getInteger(R.integer.login_sucess) ->//logged in
-                    {
-                        token = data!!.getSerializableExtra(getString(R.string.token)) as Json.Token
-                        drawerUsername.text = token!!.username
-                    }
-                    resources.getInteger(R.integer.login_failed) ->//not login
-                    {
-
-                    }
-                }
-
-            }
-        }
-    }
-
 }
