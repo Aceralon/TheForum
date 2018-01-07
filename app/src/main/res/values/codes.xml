@@ -2,8 +2,10 @@
 <resources>
     <integer name="request_reply_post">101</integer>
     <integer name="request_login">102</integer>
-    <integer name="login_sucess">201</integer>
+    <integer name="login_success">201</integer>
     <integer name="login_failed">-202</integer>
     <integer name="edit_reply">301</integer>
     <integer name="edit_new_post">302</integer>
+    <integer name="edit_success">401</integer>
+    <integer name="edit_failed">402</integer>
 </resources>

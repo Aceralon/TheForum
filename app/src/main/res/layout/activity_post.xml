@@ -40,6 +40,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <LinearLayout
             android:id="@+id/informationLayout"
             android:layout_width="match_parent"
@@ -87,6 +88,12 @@
                 app:layout_constraintRight_toLeftOf="@id/postReply"
                 app:layout_constraintTop_toBottomOf="@id/postContent" />
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/material_grey_500"
+            app:layout_constraintTop_toBottomOf="@id/informationLayout" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/postCommentView"

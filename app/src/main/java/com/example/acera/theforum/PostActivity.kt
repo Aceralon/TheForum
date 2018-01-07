@@ -35,7 +35,7 @@ class PostActivity : AppCompatActivity()
         setContentView(R.layout.activity_post)
 
         post = intent.getSerializableExtra(getString(R.string.goto_post_detail)) as Json.Post
-        token = intent.getSerializableExtra(getString(R.string.if_logged_in)) as Json.Token?
+        token = intent.getSerializableExtra(getString(R.string.token)) as Json.Token?
         postDetailToolbar.title = post!!.p_title
 
 

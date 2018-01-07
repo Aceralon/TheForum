@@ -102,7 +102,7 @@ class LoginActivity : AppCompatActivity()
                         } else
                         {
                             loginButton.progress = 100
-                            Handler().postDelayed({ exitActivity(true) }, 1500)
+                            Handler().postDelayed({ exitActivity(true) }, 1000)
                         }
                     }
 
@@ -128,8 +128,7 @@ class LoginActivity : AppCompatActivity()
         {
             val dataIntent = Intent()
             dataIntent.putExtra(getString(R.string.token), token!!.data!!)
-            setResult(resources.getInteger(R.integer.login_sucess), dataIntent)
-
+            setResult(resources.getInteger(R.integer.login_success), dataIntent)
         } else
         {
             setResult(resources.getInteger(R.integer.login_failed))

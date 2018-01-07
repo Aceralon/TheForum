@@ -27,7 +27,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_the_forum.*
 import kotlinx.android.synthetic.main.app_bar_the_forum.*
 import kotlinx.android.synthetic.main.content_the_forum.*
-import kotlinx.android.synthetic.main.nav_header_the_forum.*
 import java.util.*
 
 class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener
@@ -44,24 +43,39 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_the_forum)
         setSupportActionBar(postDetailToolbar)
-
         fab.setOnClickListener {
             val myIntent = Intent(this, EditActivity::class.java)
             myIntent.putExtra(getString(R.string.edit_intent), resources.getInteger(R.integer.edit_new_post))
             startActivity(myIntent)
         }
-
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, postDetailToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
         navView.setNavigationItemSelectedListener(this)
 
+        token = checkTokenExpiration()
         initRecyclerView()
         initRefresh()
+        changeLayout(token != null)
+    }
 
-//        startItem = navView.menu.add(0, Menu.FIRST, 100, "Start")
+    private fun changeLayout(loggedIn: Boolean)
+    {
+        val myView = drawer_layout.findViewById<NavigationView>(R.id.navView).getHeaderView(0).findViewById<TextView>(R.id.drawerUsername)
+        if (loggedIn)
+        {
+            fab.visibility = View.VISIBLE
+            myView.text = token!!.username
+            navView.menu.clear()
+            navView.inflateMenu(R.menu.activity_the_forum_logged_in)
+        } else
+        {
+            fab.visibility = View.GONE
+            myView.text = "You are not logged in"
+            navView.menu.clear()
+            navView.inflateMenu(R.menu.activity_the_forum_drawer)
+        }
     }
 
     private fun checkTokenExpiration(): Json.Token?
@@ -91,7 +105,11 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     private fun clearToken()
     {
-
+        val myEdit = getSharedPreferences(getString(R.string.myPreference), Context.MODE_PRIVATE).edit()
+        myEdit.putString(getString(R.string.token_token), "")
+        myEdit.putString(getString(R.string.token_username), "")
+        myEdit.putLong(getString(R.string.token_expiration), -1)
+        myEdit.apply()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
@@ -103,17 +121,35 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             {
                 when (resultCode)
                 {
-                    resources.getInteger(R.integer.login_sucess) ->//logged in
+                    resources.getInteger(R.integer.login_success) ->//logged in
                     {
                         token = data!!.getSerializableExtra(getString(R.string.token)) as Json.Token
-                        drawerUsername.text = token!!.username
-                        navView.inflateMenu(R.menu.activity_the_forum_logged_in)
+                        saveToken(token!!)
+                        changeLayout(true)
                     }
                     resources.getInteger(R.integer.login_failed) ->//not login
                     {
-                        Toast.makeText(this, "Not", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Not Logged in", Toast.LENGTH_SHORT).show()
+                        changeLayout(false)
                     }
                 }
+
+            }
+            resources.getInteger(R.integer.edit_new_post) ->
+            {
+                when (resultCode)
+                {
+                    resources.getInteger(R.integer.edit_success) ->
+                    {
+                        loadPages(Json.getCurrentTime(), 10, true)
+                    }
+                    resources.getInteger(R.integer.edit_failed) ->
+                    {
+
+                    }
+
+                }
+
 
             }
         }
@@ -121,8 +157,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     fun clickHeaderIcon(view: View)
     {
-        val myIntent = Intent(this, LoginActivity::class.java)
-        startActivity(myIntent)
+        //TODO change header
     }
 
     private fun initRecyclerView()
@@ -145,12 +180,12 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             {
                 val myIntent = Intent(this@TheForum, PostActivity::class.java)
                 myIntent.putExtra(getString(R.string.goto_post_detail), postList[position])
+                myIntent.putExtra(getString(R.string.token), token)
                 startActivity(myIntent)
             }
 
             override fun onLongClick(view: View, position: Int)
             {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 //see if need long click or just do nothing
             }
         })
@@ -198,14 +233,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         loadPages(Json.getCurrentTime(), 20, true)
 
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
 //        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
 
         recyclerAdapter!!.notifyItemRangeInserted(0, postList.size)
@@ -290,7 +317,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     override fun onRefresh()
     {
-        loadPages(postList.first.p_datetime!!, 5, true)
+        loadPages(postList.first.p_datetime!!, 10, true)
     }
 
     override fun onBackPressed()
@@ -345,27 +372,10 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         // Handle navigation view item clicks here.
         when (item.itemId)
         {
-//            R.id.nav_camera ->
-//            {
-//                // Handle the camera action
-//                Toast.makeText(this, "camera", Toast.LENGTH_LONG).show()
-//            }
-//            R.id.nav_gallery ->
-//            {
-//                Toast.makeText(this, "gallery", Toast.LENGTH_LONG).show()
-//            }
-//            R.id.nav_slideshow ->
-//            {
-//                Toast.makeText(this, "slideshow", Toast.LENGTH_LONG).show()
-//            }
-//            R.id.nav_manage ->
-//            {
-//                Toast.makeText(this, "manage", Toast.LENGTH_LONG).show()
-//
-//            }
             R.id.nav_logout ->
             {
-
+                clearToken()
+                changeLayout(false)
             }
             R.id.nav_register ->
             {

@@ -5,7 +5,6 @@
     <string name="goto_post_detail">POST_DETAIL</string>
     <string name="token">TOKEN</string>
     <string name="edit_intent">EDIT</string>
-    <string name="if_logged_in">LOGIN</string>
     <string name="userName">USERNAME</string>
     <string name="myPreference">PREFERENCE</string>
     <string name="token_token">TOKEN_TOKEN</string>

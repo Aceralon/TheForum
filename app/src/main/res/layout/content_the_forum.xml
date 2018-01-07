@@ -18,6 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="always"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
             android:paddingTop="10dp" />
     </android.support.v4.widget.SwipeRefreshLayout>
 

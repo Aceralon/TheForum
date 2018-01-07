@@ -128,7 +128,7 @@ class RegisterActivity : AppCompatActivity()
                         {
                             registerButton.progress = 100
 //                            Toast.makeText(this@RegisterActivity, "Register successfully!", Toast.LENGTH_SHORT).show()
-                            Handler().postDelayed({ toLoginActivity() }, 1500)
+                            Handler().postDelayed({ toLoginActivity() }, 1000)
                         }
                     }
 
