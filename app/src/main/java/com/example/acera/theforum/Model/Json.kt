@@ -15,11 +15,11 @@ class Json : Serializable
 
     data class User(val uid: Long?, val username: String?, val password: String?, val role: Int?, val avatar: String?)
 
-    data class Post(val username: String?, val p_title: String?, val p_content: String?, val p_datetime: String?, val p_floor: Long?, val pid: Long) : Serializable
+    data class Post(val username: String?, val p_title: String?, val p_content: String?, val p_datetime: String?, val p_floor: Long?, val pid: Long?) : Serializable
 
     data class Posts(val posts: List<Post>?)
 
-    data class Comment(val username: String?, val c_content: String?, val c_datetime: String?) : Serializable
+    data class Comment(val username: String?, val c_content: String?, val c_datetime: String?, val pid: Long?) : Serializable
 
     data class Comments(val comments: List<Comment>?)
 
