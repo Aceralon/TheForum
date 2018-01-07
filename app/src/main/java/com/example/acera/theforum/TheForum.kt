@@ -145,15 +145,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         loadPages(Json.getCurrentTime(), 20, true)
 
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
-//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0))
+//        postList.add(Json.Post("aa", "bb", "CC", "DD", 0)) DEBUG ONLY
 
         recyclerAdapter!!.notifyItemRangeInserted(0, postList.size)
     }
@@ -291,24 +283,24 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         // Handle navigation view item clicks here.
         when (item.itemId)
         {
-            R.id.nav_camera ->
-            {
-                // Handle the camera action
-                Toast.makeText(this, "camera", Toast.LENGTH_LONG).show()
-            }
-            R.id.nav_gallery ->
-            {
-                Toast.makeText(this, "gallery", Toast.LENGTH_LONG).show()
-            }
-            R.id.nav_slideshow ->
-            {
-                Toast.makeText(this, "slideshow", Toast.LENGTH_LONG).show()
-            }
-            R.id.nav_manage ->
-            {
-                Toast.makeText(this, "manage", Toast.LENGTH_LONG).show()
-
-            }
+//            R.id.nav_camera ->
+//            {
+//                // Handle the camera action
+//                Toast.makeText(this, "camera", Toast.LENGTH_LONG).show()
+//            }
+//            R.id.nav_gallery ->
+//            {
+//                Toast.makeText(this, "gallery", Toast.LENGTH_LONG).show()
+//            }
+//            R.id.nav_slideshow ->
+//            {
+//                Toast.makeText(this, "slideshow", Toast.LENGTH_LONG).show()
+//            }
+//            R.id.nav_manage ->
+//            {
+//                Toast.makeText(this, "manage", Toast.LENGTH_LONG).show()
+//
+//            }
             R.id.nav_register ->
             {
                 val myIntent = Intent(this, RegisterActivity::class.java)

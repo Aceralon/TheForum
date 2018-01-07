@@ -1,5 +1,6 @@
 package com.example.acera.theforum
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -8,16 +9,17 @@ import android.widget.Toast
 import com.dd.processbutton.iml.ActionProcessButton
 import com.example.acera.theforum.Model.Json
 import com.example.acera.theforum.NetworkService.ServiceFactory
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_register.*
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
 
 class RegisterActivity : AppCompatActivity()
 {
 
     var msg: Json.Message? = null
+    var userName = ""
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -91,6 +93,7 @@ class RegisterActivity : AppCompatActivity()
 //            {
 //                e.printStackTrace()
 //            }
+            userName = userStr
             registerAction(userStr, passwordStr)
             finish()
 
@@ -105,28 +108,32 @@ class RegisterActivity : AppCompatActivity()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<Json.Message>
                 {
-                    override fun onNext(t: Json.Message) {
+                    override fun onNext(t: Json.Message)
+                    {
                         msg = t
                     }
 
-                    override fun onError(e: Throwable) {
+                    override fun onError(e: Throwable)
+                    {
                         registerFailed("Register failed!")
                         e.printStackTrace()
                     }
 
-                    override fun onComplete() {
+                    override fun onComplete()
+                    {
                         if (msg!!.state == "1")
                         {
                             registerFailed(msg!!.message)
                         } else
                         {
                             registerButton.progress = 100
-                            Toast.makeText(this@RegisterActivity, "Register successfully!", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this@RegisterActivity, "Register successfully!", Toast.LENGTH_SHORT).show()
                             Handler().postDelayed({ toLoginActivity() }, 1500)
                         }
                     }
 
-                    override fun onSubscribe(d: Disposable) {
+                    override fun onSubscribe(d: Disposable)
+                    {
                         registerButton.progress = 1
                         registerButton.isEnabled = false
                         registerUserLayout.isEnabled = false
@@ -148,6 +155,9 @@ class RegisterActivity : AppCompatActivity()
 
     private fun toLoginActivity()
     {
+        val myIntent = Intent(this, LoginActivity::class.java)
+        myIntent.putExtra(getString(R.string.userName), userName)
+        startActivity(myIntent)
         finish()
     }
 }

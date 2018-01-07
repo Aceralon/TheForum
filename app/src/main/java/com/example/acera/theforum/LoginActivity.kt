@@ -30,6 +30,14 @@ class LoginActivity : AppCompatActivity()
                 getColor(R.color.material_red_700),
                 getColor(R.color.material_orange_700),
                 getColor(R.color.material_light_green_700))
+
+
+        val userName = intent.getStringExtra(getString(R.string.userName))
+        if (!userName.isNullOrBlank())
+        {
+            loginUser.setText(userName)
+            loginPassword.requestFocus()
+        }
     }
 
     fun loginButtonClick(view: View)
