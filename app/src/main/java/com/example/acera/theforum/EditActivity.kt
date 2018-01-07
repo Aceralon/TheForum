@@ -1,6 +1,7 @@
 package com.example.acera.theforum
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -21,6 +22,7 @@ class EditActivity : AppCompatActivity()
     private val gson = Gson()
     private var token: Json.Token? = null
     private var message: Json.Message? = null
+    private var newPost = false
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -31,6 +33,7 @@ class EditActivity : AppCompatActivity()
         {
             resources.getInteger(R.integer.edit_new_post) ->
             {
+                newPost = true
                 title = "New Post"
                 titleEditText.isFocusable = true
                 titleEditText.isFocusableInTouchMode = true
@@ -58,12 +61,12 @@ class EditActivity : AppCompatActivity()
         dialog.setMessage("Are you sure to cancel editing? All the content will be deleted!")
         dialog.setCancelable(true)
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK")
-        {
-            _, _ -> finish()
+        { _, _ ->
+            finish()
         }
         dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel")
-        {
-            _, _ -> dialog.dismiss()
+        { _, _ ->
+            dialog.dismiss()
         }
         dialog.show()
     }
@@ -90,40 +93,49 @@ class EditActivity : AppCompatActivity()
                             override fun onError(e: Throwable)
                             {
                                 val dialog = AlertDialog.Builder(this@EditActivity).create()
+                                e.printStackTrace()
                                 dialog.setTitle("Alert")
-                                dialog.setMessage("Something wrong when posting!")
+                                dialog.setMessage("Error!")
                                 dialog.setCancelable(true)
                                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK")
-                                {
-                                    _, _ -> dialog.dismiss()
+                                { _, _ ->
+                                    dialog.dismiss()
                                 }
                                 dialog.show()
                                 titleEditText.isEnabled = true
                                 editEditText.isEnabled = true
                             }
 
-                            override fun onComplete() {
+                            override fun onComplete()
+                            {
                                 titleEditText.isEnabled = true
                                 editEditText.isEnabled = true
-                                if (message!!.state != "0")
+                                if (message!!.state == "0")
                                 {
                                     Toast.makeText(this@EditActivity, "Posted successfully!", Toast.LENGTH_SHORT).show()
+                                    val myIntent = if (newPost)
+                                        Intent(this@EditActivity, TheForum::class.java)
+                                    else
+                                        Intent(this@EditActivity, PostActivity::class.java)
+                                    myIntent.putExtra("success", true)
+                                    startActivity(myIntent)
                                     finish()
                                 } else
                                 {
                                     val dialog = AlertDialog.Builder(this@EditActivity).create()
                                     dialog.setTitle("Alert")
-                                    dialog.setMessage("Something wrong when posting!")
+                                    dialog.setMessage(message!!.message)
                                     dialog.setCancelable(true)
                                     dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK")
-                                    {
-                                        _, _ -> dialog.dismiss()
+                                    { _, _ ->
+                                        dialog.dismiss()
                                     }
                                     dialog.show()
                                 }
                             }
 
-                            override fun onSubscribe(d: Disposable) {
+                            override fun onSubscribe(d: Disposable)
+                            {
                                 titleEditText.isEnabled = false
                                 editEditText.isEnabled = false
                             }
@@ -151,15 +163,16 @@ class EditActivity : AppCompatActivity()
                                 dialog.setMessage("Something wrong when posting!")
                                 dialog.setCancelable(true)
                                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK")
-                                {
-                                    _, _ -> dialog.dismiss()
+                                { _, _ ->
+                                    dialog.dismiss()
                                 }
                                 dialog.show()
                                 titleEditText.isEnabled = true
                                 editEditText.isEnabled = true
                             }
 
-                            override fun onComplete() {
+                            override fun onComplete()
+                            {
                                 titleEditText.isEnabled = true
                                 editEditText.isEnabled = true
                                 if (message!!.state != "0")
@@ -173,14 +186,15 @@ class EditActivity : AppCompatActivity()
                                     dialog.setMessage("Something wrong when posting!")
                                     dialog.setCancelable(true)
                                     dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK")
-                                    {
-                                        _, _ -> dialog.dismiss()
+                                    { _, _ ->
+                                        dialog.dismiss()
                                     }
                                     dialog.show()
                                 }
                             }
 
-                            override fun onSubscribe(d: Disposable) {
+                            override fun onSubscribe(d: Disposable)
+                            {
                                 titleEditText.isEnabled = false
                                 editEditText.isEnabled = false
                             }

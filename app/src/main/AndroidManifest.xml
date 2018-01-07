@@ -16,6 +16,7 @@
         <activity
             android:name=".TheForum"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +32,7 @@
         <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBarMod" />
         <activity android:name=".EditActivity" />
     </application>

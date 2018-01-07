@@ -113,6 +113,15 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         myEdit.apply()
     }
 
+    override fun onNewIntent(intent: Intent?)
+    {
+        super.onNewIntent(intent)
+        if (intent!!.getBooleanExtra("success", false))
+        {
+            loadPages(Json.getCurrentTime(), 10, true)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
         super.onActivityResult(requestCode, resultCode, data)
@@ -170,7 +179,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 holder.getView<TextView>(R.id.mainPostItemSender).text = t.username
                 holder.getView<TextView>(R.id.mainPostItemTitle).text = t.p_title
                 holder.getView<TextView>(R.id.mainPostItemContent).text = t.p_content
-                holder.getView<TextView>(R.id.mainPostItemTime).text = t.p_datetime!!.substring(0, 9)
+                holder.getView<TextView>(R.id.mainPostItemTime).text = t.p_datetime!!.substring(0, 10)
                 holder.getView<TextView>(R.id.mainPostItemReply).text = t.p_floor.toString()
             }
         }

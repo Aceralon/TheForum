@@ -51,12 +51,21 @@ class PostActivity : AppCompatActivity()
             fab.visibility = View.GONE
         } else
         {
-            fab.setOnClickListener { view ->
+            fab.setOnClickListener {
                 val myIntent = Intent(this, EditActivity::class.java)
                 myIntent.putExtra(getString(R.string.edit_intent), resources.getInteger(R.integer.edit_reply))
                 myIntent.putExtra(getString(R.string.token), token)
-                startActivity(myIntent)
+                startActivityForResult(myIntent, resources.getInteger(R.integer.edit_reply))
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?)
+    {
+        super.onNewIntent(intent)
+        if (intent!!.getBooleanExtra("success", false))
+        {
+            loadComment()
         }
     }
 
@@ -67,7 +76,7 @@ class PostActivity : AppCompatActivity()
             override fun convert(holder: ViewHolder, t: Json.Comment)
             {
                 holder.getView<TextView>(R.id.commentItemContent).text = t.c_content
-                holder.getView<TextView>(R.id.commentItemTime).text = t.c_datetime!!.substring(0, 9)
+                holder.getView<TextView>(R.id.commentItemTime).text = t.c_datetime!!.substring(0, 10)
                 holder.getView<TextView>(R.id.commentItemSender).text = t.username
             }
 
@@ -99,6 +108,7 @@ class PostActivity : AppCompatActivity()
                             onComplete()
                         } else
                         {
+                            comments.clear()
                             comments.addAll(0, t.data!!.comments!!)
                             recyclerAdapter!!.notifyItemRangeInserted(0, comments.size)
                         }

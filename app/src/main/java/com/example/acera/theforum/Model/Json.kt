@@ -44,7 +44,7 @@ class Json : Serializable
         fun getCurrentTime(): String
         {
             formatter.timeZone = TimeZone.getTimeZone("GMT+08")
-            return formatter.format(Date(System.currentTimeMillis()))
+            return formatter.format(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 1))
         }
 
         fun timeToLong(datetime: String): Long
