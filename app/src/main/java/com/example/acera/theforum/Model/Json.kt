@@ -20,7 +20,7 @@ class Json : Serializable
 
     data class Posts(val posts: List<Post>?)
 
-    data class Comment(val username: String?, val c_content: String?, val c_datetime: String?, val pid: Long?) : Serializable
+    data class Comment(val username: String?, val c_content: String?, val c_datetime: String?, val pid: Long?, val cid: Long?, val c_floor: Long?, val r_floor: Long?) : Serializable
 
     data class Comments(val comments: List<Comment>?)
 
