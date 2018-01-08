@@ -16,8 +16,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.Json
@@ -41,6 +43,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private val layoutManager = LinearLayoutManager(this)
     private var startItem: MenuItem? = null
     private var token: Json.Token? = null
+    private var user: Json.User? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -60,6 +63,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         navView.setNavigationItemSelectedListener(this)
 
         token = checkTokenExpiration()
+        loadUserAvatar()
         initRecyclerView()
         initRefresh()
         changeLayout(token != null)
@@ -117,6 +121,65 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         myEdit.apply()
     }
 
+
+    private fun loadUserAvatar()
+    {//TODO DEBUGD
+        if (token != null)
+        {
+            if (user != null)
+            {
+                Glide.with(this)
+                        .load("https://simpletieba.mtzero.org/uploads/avatar/" + user!!.avatar)
+                        .into(drawer_layout
+                                .findViewById<NavigationView>(R.id.navView)
+                                .getHeaderView(0)
+                                .findViewById<ImageView>(R.id.drawerIcon))
+            } else
+            {
+                ServiceFactory.myService
+                        .getUser(Json.User(null, token!!.username, null, null, null), token!!.token!!)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Observer<Json.MessageUser>
+                        {
+                            override fun onError(e: Throwable)
+                            {
+                                Toast.makeText(this@TheForum, "Load avatar Error", Toast.LENGTH_SHORT).show()
+                                e.printStackTrace()
+                            }
+
+                            override fun onComplete()
+                            {
+                                Glide.with(this@TheForum)
+                                        .load("https://simpletieba.mtzero.org/uploads/avatar/" + user!!.avatar)
+                                        .into(drawer_layout
+                                                .findViewById<NavigationView>(R.id.navView)
+                                                .getHeaderView(0)
+                                                .findViewById<ImageView>(R.id.drawerIcon))
+                            }
+
+                            override fun onNext(t: Json.MessageUser)
+                            {
+                                if (t.state == "1")
+                                {
+                                    Toast.makeText(this@TheForum, t.message, Toast.LENGTH_SHORT).show()
+                                    onComplete()
+                                } else
+                                {
+                                    user = t.data
+                                }
+                            }
+
+                            override fun onSubscribe(d: Disposable)
+                            {
+
+                            }
+                        })
+
+            }
+        }
+    }
+
     override fun onNewIntent(intent: Intent?)
     {
         super.onNewIntent(intent)
@@ -139,6 +202,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     {
                         token = data!!.getSerializableExtra(getString(R.string.token)) as Json.Token
                         saveToken(token!!)
+                        loadUserAvatar()
                         changeLayout(true)
                     }
                     resources.getInteger(R.integer.login_failed) ->//not login
