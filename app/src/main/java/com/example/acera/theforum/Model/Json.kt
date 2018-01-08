@@ -2,7 +2,8 @@ package com.example.acera.theforum.Model
 
 import android.icu.text.SimpleDateFormat
 import android.icu.util.TimeZone
-import android.util.Log
+import android.text.Html
+import android.text.Spanned
 import java.io.Serializable
 import java.util.*
 
@@ -67,7 +68,7 @@ class Json : Serializable
         }
 
 
-        fun bbcodeToHTML(bbcode: String): String
+        private fun bbcodeToHtml(bbcode: String): String
         {
             var html = bbcode
             val formatReplace = arrayOf(
@@ -84,7 +85,7 @@ class Json : Serializable
             return html
         }
 
-        fun bbcodeToHtmlNoImage(bbcode: String): String
+        private fun bbcodeToHtmlNoImage(bbcode: String): String
         {
             var html = bbcode
             val formatReplace = arrayOf(
@@ -99,6 +100,14 @@ class Json : Serializable
                 html = html.replace(Regex(formatSearch[i]), formatReplace[i])
             }
             return html
+        }
+
+        fun bbcodeToSpanndable(bbcode: String, image: Boolean): Spanned
+        {
+            return if (image)
+                Html.fromHtml(bbcodeToHtml(bbcode), Html.FROM_HTML_MODE_COMPACT)
+            else
+                Html.fromHtml(bbcodeToHtmlNoImage(bbcode), Html.FROM_HTML_MODE_COMPACT)
         }
     }
 }

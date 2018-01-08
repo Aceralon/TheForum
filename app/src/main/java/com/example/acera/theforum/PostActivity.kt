@@ -41,7 +41,7 @@ class PostActivity : AppCompatActivity()
         postDetailToolbar.title = post!!.p_title
 
 
-        postContent.text = Json.bbcodeToHTML(post!!.p_content!!)
+        postContent.text = Json.bbcodeToSpanndable(post!!.p_content!!, true)
         postTime.text = post!!.p_datetime!!.substring(0, 9)
         postSender.text = post!!.username
         postReply.text = post!!.p_floor.toString()
@@ -75,11 +75,11 @@ class PostActivity : AppCompatActivity()
 
     private fun initRecyclerView()
     {
-        recyclerAdapter = object : RecyclerAdapter<Json.Comment>(this, R.layout.post_reply_item, comments)
+        recyclerAdapter = object : RecyclerAdapter<Json.Comment>(this, R.layout.post_comment_item, comments)
         {
             override fun convert(holder: ViewHolder, t: Json.Comment)
             {
-                holder.getView<TextView>(R.id.commentItemContent).text = t.c_content
+                holder.getView<TextView>(R.id.commentItemContent).text = Json.bbcodeToSpanndable(t.c_content!!, true)
                 holder.getView<TextView>(R.id.commentItemTime).text = t.c_datetime!!.substring(0, 10)
                 holder.getView<TextView>(R.id.commentItemSender).text = t.username
             }
