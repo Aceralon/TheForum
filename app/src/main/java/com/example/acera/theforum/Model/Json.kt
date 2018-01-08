@@ -86,7 +86,7 @@ class Json : Serializable
                     "<strong>$1</strong>",
                     "<em>$1</em>",
                     "<span style='text-decoration: underline;'>$1</span>",
-                    "<br><img src='uploads/files/$1' alt='image' class='content-image'>",
+                    "<br><img src='uploads/files/$1' alt='image' class='content-image'><br>",
                     "<span class='emoticons emo-$1'></span>"
             )
             for (i in formatSearch.indices)
