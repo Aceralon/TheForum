@@ -290,7 +290,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
             override fun onLongClick(view: View, position: Int)
             {
-                if (token!!.username == "admin")
+                if (token != null && token!!.username == "admin")
                 {
                     val gson = Gson()
                     var message: Json.Message? = null
