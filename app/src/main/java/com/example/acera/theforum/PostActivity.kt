@@ -38,7 +38,7 @@ class PostActivity : AppCompatActivity()
         postDetailToolbar.title = post!!.p_title
 
 
-        postContent.text = post!!.p_content
+        postContent.text = Json.bbcodeToHTML(post!!.p_content!!)
         postTime.text = post!!.p_datetime!!.substring(0, 9)
         postSender.text = post!!.username
         postReply.text = post!!.p_floor.toString()
