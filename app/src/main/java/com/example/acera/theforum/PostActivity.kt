@@ -1,7 +1,9 @@
 package com.example.acera.theforum
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
@@ -12,6 +14,7 @@ import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.Json
 import com.example.acera.theforum.NetworkService.ServiceFactory
+import com.google.gson.Gson
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -82,6 +85,63 @@ class PostActivity : AppCompatActivity()
             }
 
         }
+
+        recyclerAdapter!!.setOnItemClickListener(object : RecyclerAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int) {
+                TODO("not implemented")
+            }
+
+            override fun onLongClick(view: View, position: Int) {
+                if (token!!.username == "admin") {
+                    val gson = Gson()
+                    var message: Json.Message? = null
+                    val dialog = AlertDialog.Builder(this@PostActivity).create()
+                    dialog.setTitle("Confirm")
+                    dialog.setMessage("Are you sure to delete this comment?")
+                    dialog.setCancelable(true)
+                    dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK")
+                    { _, _ ->
+                        ServiceFactory.myService
+                                .deleteComment(Json.Comment(null, null, null, null, comments[position].cid, null, null), gson.toJson(token))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(object : Observer<Json.Message> {
+                                    override fun onNext(t: Json.Message) {
+                                        message = t
+                                    }
+
+                                    override fun onError(e: Throwable) {
+                                        val dialog1 = AlertDialog.Builder(this@PostActivity).create()
+                                        e.printStackTrace()
+                                        dialog1.setTitle("Alert")
+                                        dialog1.setMessage("Error!")
+                                        dialog1.setCancelable(true)
+                                        dialog1.setButton(DialogInterface.BUTTON_POSITIVE, "OK")
+                                        { _, _ ->
+                                            dialog1.dismiss()
+                                        }
+                                        dialog1.show()
+                                    }
+
+                                    override fun onComplete() {
+                                        Toast.makeText(this@PostActivity, "Deleted!", Toast.LENGTH_SHORT).show()
+                                        comments.removeAt(position)
+                                        recyclerAdapter!!.notifyItemRemoved(position)
+                                    }
+
+                                    override fun onSubscribe(d: Disposable) {
+                                        // nothing to do
+                                    }
+                                })
+                    }
+                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel")
+                    { _, _ ->
+                        dialog.dismiss()
+                    }
+                    dialog.show()
+                }
+            }
+        })
 
         postCommentView.adapter = recyclerAdapter
         postCommentView.layoutManager = layoutManager

@@ -146,7 +146,7 @@ class EditActivity : AppCompatActivity()
             {
                 val pid = intent.getLongExtra("pid", 0)
                 ServiceFactory.myService
-                        .addComment(Json.Comment(null, editEditText.text.toString(), null, pid), tokenString)
+                        .addComment(Json.Comment(null, editEditText.text.toString(), null, pid, null, null, null), tokenString)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<Json.Message>
