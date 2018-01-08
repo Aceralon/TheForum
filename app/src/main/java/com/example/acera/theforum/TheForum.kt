@@ -91,7 +91,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         val expLong = preference.getLong(getString(R.string.token_expiration), -1)
         return if (System.currentTimeMillis() < expLong * 1000)
         {
-            Json.Token(tokenStr, expLong, nameStr)
+            Json.Token(nameStr, expLong, tokenStr)
         } else
         {
             clearToken()
@@ -198,8 +198,10 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 startActivity(myIntent)
             }
 
-            override fun onLongClick(view: View, position: Int) {
-                if (token!!.username == "admin") {
+            override fun onLongClick(view: View, position: Int)
+            {
+                if (token!!.username == "admin")
+                {
                     val gson = Gson()
                     var message: Json.Message? = null
                     val dialog = AlertDialog.Builder(this@TheForum).create()
@@ -212,12 +214,15 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                 .deletePost(Json.Post(null, null, null, null, null, postList[position].pid), gson.toJson(token))
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(object : Observer<Json.Message> {
-                                    override fun onNext(t: Json.Message) {
+                                .subscribe(object : Observer<Json.Message>
+                                {
+                                    override fun onNext(t: Json.Message)
+                                    {
                                         message = t
                                     }
 
-                                    override fun onError(e: Throwable) {
+                                    override fun onError(e: Throwable)
+                                    {
                                         val dialog1 = AlertDialog.Builder(this@TheForum).create()
                                         e.printStackTrace()
                                         dialog1.setTitle("Alert")
@@ -230,13 +235,15 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                         dialog1.show()
                                     }
 
-                                    override fun onComplete() {
+                                    override fun onComplete()
+                                    {
                                         Toast.makeText(this@TheForum, "Deleted!", Toast.LENGTH_SHORT).show()
                                         postList.removeAt(position)
                                         recyclerAdapter!!.notifyItemRemoved(position)
                                     }
 
-                                    override fun onSubscribe(d: Disposable) {
+                                    override fun onSubscribe(d: Disposable)
+                                    {
                                         // nothing to do
                                     }
                                 })
