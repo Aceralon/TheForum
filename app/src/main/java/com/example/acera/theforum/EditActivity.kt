@@ -175,6 +175,7 @@ class EditActivity : AppCompatActivity()
                             {
                                 titleEditText.isEnabled = true
                                 editEditText.isEnabled = true
+                                applicationContext
                                 if (message!!.state == "0")
                                 {
                                     Toast.makeText(this@EditActivity, "Posted successfully!", Toast.LENGTH_SHORT).show()

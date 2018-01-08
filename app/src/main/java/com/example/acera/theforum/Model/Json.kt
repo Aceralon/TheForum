@@ -1,11 +1,22 @@
 package com.example.acera.theforum.Model
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.PixelFormat
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.icu.text.SimpleDateFormat
 import android.icu.util.TimeZone
+import android.text.Editable
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
+import org.xml.sax.XMLReader
 import java.io.Serializable
+import java.net.URL
 import java.util.*
+
 
 /**
  * Created by acera on 2018/1/1.
@@ -75,7 +86,7 @@ class Json : Serializable
                     "<strong>$1</strong>",
                     "<em>$1</em>",
                     "<span style='text-decoration: underline;'>$1</span>",
-                    "<img src='uploads/files/$1' alt='image' class='content-image'>",
+                    "<br><img src='uploads/files/$1' alt='image' class='content-image'>",
                     "<span class='emoticons emo-$1'></span>"
             )
             for (i in formatSearch.indices)
@@ -102,12 +113,84 @@ class Json : Serializable
             return html
         }
 
-        fun bbcodeToSpanndable(bbcode: String, image: Boolean): Spanned
+        private val imgGetter = object : Html.ImageGetter
+        {
+            override fun getDrawable(source: String?): Drawable
+            {
+                val des = "https://simpletieba.mtzero.org/" + source
+                Log.i("Load pic", des)
+                var drawable: Drawable? = null
+                val url = URL(des)
+
+                val thread = object : Thread()
+                {
+                    override fun run()
+                    {
+                        try
+                        {
+                            val a = url.openStream()
+                            drawable = Drawable.createFromStream(a, "")
+
+                        } catch (e: Exception)
+                        {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                thread.start()
+                thread.join()
+                drawable!!.setBounds(0, 0, drawable!!.intrinsicWidth, drawable!!.intrinsicHeight)
+//                drawable = zoomDrawable(drawable!!, 500, 500 * drawable!!.intrinsicWidth / drawable!!.intrinsicHeight)
+                return drawable!!
+            }
+
+        }
+
+        private fun zoomDrawable(drawable: Drawable, w: Int, h: Int): Drawable
+        {
+            val width = drawable.intrinsicWidth
+            val height = drawable.intrinsicHeight
+            val oldbmp = drawableToBitmap(drawable)
+            val matrix = Matrix()
+            val scaleWidth = w.toFloat() / width
+            val scaleHeight = h.toFloat() / height
+            matrix.postScale(scaleWidth, scaleHeight)
+            val newbmp = Bitmap.createBitmap(oldbmp, 0, 0, width, height,
+                    matrix, true)
+
+            return BitmapDrawable(newbmp)
+        }
+
+        private fun drawableToBitmap(drawable: Drawable): Bitmap
+        {
+            val width = drawable.intrinsicWidth
+            val height = drawable.intrinsicHeight
+            val config = if (drawable.opacity != PixelFormat.OPAQUE)
+                Bitmap.Config.ARGB_8888
+            else
+                Bitmap.Config.RGB_565
+            val bitmap = Bitmap.createBitmap(width, height, config)
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, width, height)
+            drawable.draw(canvas)
+            return bitmap
+        }
+
+        private val tagHanddler = object : Html.TagHandler
+        {
+            override fun handleTag(opening: Boolean, tag: String?, output: Editable?, xmlReader: XMLReader?)
+            {
+
+            }
+
+        }
+
+        fun bbcodeToSpanned(bbcode: String, image: Boolean): Spanned
         {
             return if (image)
-                Html.fromHtml(bbcodeToHtml(bbcode), Html.FROM_HTML_MODE_COMPACT)
+                Html.fromHtml(bbcodeToHtml(bbcode), Html.FROM_HTML_MODE_COMPACT, imgGetter, tagHanddler)
             else
-                Html.fromHtml(bbcodeToHtmlNoImage(bbcode), Html.FROM_HTML_MODE_COMPACT)
+                Html.fromHtml(bbcodeToHtmlNoImage(bbcode), Html.FROM_HTML_MODE_COMPACT, imgGetter, tagHanddler)
         }
     }
 }

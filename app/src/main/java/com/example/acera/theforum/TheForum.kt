@@ -21,7 +21,7 @@ import android.widget.Toast
 import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.Json
-import com.example.acera.theforum.Model.Json.Companion.bbcodeToSpanndable
+import com.example.acera.theforum.Model.Json.Companion.bbcodeToSpanned
 import com.example.acera.theforum.NetworkService.ServiceFactory
 import com.google.gson.Gson
 import io.reactivex.Observer
@@ -182,7 +182,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             {
                 holder.getView<TextView>(R.id.mainPostItemSender).text = t.username
                 holder.getView<TextView>(R.id.mainPostItemTitle).text = t.p_title
-                holder.getView<TextView>(R.id.mainPostItemContent).text = bbcodeToSpanndable(t.p_content!!, false)
+                holder.getView<TextView>(R.id.mainPostItemContent).text = bbcodeToSpanned(t.p_content!!, false)
                 holder.getView<TextView>(R.id.mainPostItemTime).text = t.p_datetime!!.substring(0, 10)
                 holder.getView<TextView>(R.id.mainPostItemReply).text = t.p_floor.toString()
             }
