@@ -24,7 +24,10 @@ android {
     productFlavors {
     }
 }
-
+repositories {
+    mavenCentral()
+    google()
+}
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"

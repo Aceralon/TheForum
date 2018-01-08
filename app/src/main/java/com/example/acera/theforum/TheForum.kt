@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,8 +21,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
+import com.example.acera.theforum.Model.GlideCircleTransform
 import com.example.acera.theforum.Model.Json
 import com.example.acera.theforum.Model.Json.Companion.bbcodeToSpanned
 import com.example.acera.theforum.NetworkService.ServiceFactory
@@ -63,7 +66,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         navView.setNavigationItemSelectedListener(this)
 
         token = checkTokenExpiration()
-        loadUserAvatar()
         initRecyclerView()
         initRefresh()
         changeLayout(token != null)
@@ -71,17 +73,25 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     private fun changeLayout(loggedIn: Boolean)
     {
-        val myView = drawer_layout.findViewById<NavigationView>(R.id.navView).getHeaderView(0).findViewById<TextView>(R.id.drawerUsername)
+        val userView = drawer_layout.findViewById<NavigationView>(R.id.navView).getHeaderView(0).findViewById<TextView>(R.id.drawerUsername)
+        val userRole = drawer_layout.findViewById<NavigationView>(R.id.navView).getHeaderView(0).findViewById<TextView>(R.id.drawerText)
         if (loggedIn)
         {
             fab.visibility = View.VISIBLE
-            myView.text = token!!.username
+            userView.text = token!!.username
+            userRole.text = if (token!!.username == "admin")
+                "admin"
+            else
+                "Normal User"
             navView.menu.clear()
+            loadUserAvatar()
             navView.inflateMenu(R.menu.activity_the_forum_logged_in)
         } else
         {
             fab.visibility = View.GONE
-            myView.text = "You are not logged in"
+            userView.text = "You are not logged in"
+            userRole.text = "Guest"
+            loadUserAvatar()
             navView.menu.clear()
             navView.inflateMenu(R.menu.activity_the_forum_drawer)
         }
@@ -119,25 +129,32 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         myEdit.putString(getString(R.string.token_username), "")
         myEdit.putLong(getString(R.string.token_expiration), -1)
         myEdit.apply()
+        token = null
+        user = null
     }
 
-
     private fun loadUserAvatar()
-    {//TODO DEBUGD
+    {
+        val option = RequestOptions()
+                .placeholder(R.mipmap.ic_launcher_round_old)
+                .transform(GlideCircleTransform())
         if (token != null)
         {
             if (user != null)
             {
+                Log.i("image", user!!.avatar)
                 Glide.with(this)
                         .load("https://simpletieba.mtzero.org/uploads/avatar/" + user!!.avatar)
+                        .apply(option)
                         .into(drawer_layout
                                 .findViewById<NavigationView>(R.id.navView)
                                 .getHeaderView(0)
                                 .findViewById<ImageView>(R.id.drawerIcon))
             } else
             {
+                val gson = Gson()
                 ServiceFactory.myService
-                        .getUser(Json.User(null, token!!.username, null, null, null), token!!.token!!)
+                        .getUser(Json.User(null, token!!.username, null, null, null), gson.toJson(token))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<Json.MessageUser>
@@ -152,6 +169,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                             {
                                 Glide.with(this@TheForum)
                                         .load("https://simpletieba.mtzero.org/uploads/avatar/" + user!!.avatar)
+                                        .apply(option)
                                         .into(drawer_layout
                                                 .findViewById<NavigationView>(R.id.navView)
                                                 .getHeaderView(0)
@@ -177,6 +195,15 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                         })
 
             }
+        } else
+        {
+            Glide.with(this)
+                    .load(R.mipmap.ic_launcher_round_old)
+                    .apply(option)
+                    .into(drawer_layout
+                            .findViewById<NavigationView>(R.id.navView)
+                            .getHeaderView(0)
+                            .findViewById<ImageView>(R.id.drawerIcon))
         }
     }
 
@@ -202,7 +229,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     {
                         token = data!!.getSerializableExtra(getString(R.string.token)) as Json.Token
                         saveToken(token!!)
-                        loadUserAvatar()
                         changeLayout(true)
                     }
                     resources.getInteger(R.integer.login_failed) ->//not login
@@ -523,7 +549,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 Toast.makeText(this, "start", Toast.LENGTH_LONG).show()
             }
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
