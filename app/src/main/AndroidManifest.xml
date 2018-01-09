@@ -31,6 +31,7 @@
         <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBarMod" />
         <activity android:name=".EditActivity" />
     </application>

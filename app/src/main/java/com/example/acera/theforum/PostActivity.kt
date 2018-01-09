@@ -1,5 +1,6 @@
 package com.example.acera.theforum
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -30,7 +33,7 @@ class PostActivity : AppCompatActivity()
     private var token: Json.Token? = null
     private val comments = LinkedList<Json.Comment>()
     private var recyclerAdapter: RecyclerAdapter<Json.Comment>? = null
-    private val layoutManager = LinearLayoutManager(this)
+    private val layoutManager = WrapContentLinearLayoutManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -65,14 +68,23 @@ class PostActivity : AppCompatActivity()
         }
     }
 
-    override fun onNewIntent(intent: Intent?)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
-        super.onNewIntent(intent)
-        if (intent!!.getBooleanExtra("success", false))
+        if (requestCode == resources.getInteger(R.integer.edit_reply))
         {
             loadComment()
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
+
+//    override fun onNewIntent(intent: Intent?)
+//    {
+//        super.onNewIntent(intent)
+//        if (intent!!.getBooleanExtra("success", false))
+//        {
+//            loadComment()
+//        }
+//    }
 
     private fun initRecyclerView()
     {
@@ -199,4 +211,32 @@ class PostActivity : AppCompatActivity()
                 })
     }
 
+    inner class WrapContentLinearLayoutManager : LinearLayoutManager
+    {
+        constructor(context: Context) : super(context)
+        {
+        }
+
+        constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
+        {
+        }
+
+        constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+        {
+        }
+
+        override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State)
+        {
+            try
+            {
+                super.onLayoutChildren(recycler, state)
+            } catch (e: IndexOutOfBoundsException)
+            {
+                e.printStackTrace()
+            }
+
+        }
+    }
 }
+
+
