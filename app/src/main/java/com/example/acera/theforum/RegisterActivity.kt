@@ -26,6 +26,8 @@ class RegisterActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        title = "Register"
+
         registerButton.setMode(ActionProcessButton.Mode.ENDLESS)
         registerButton.setColorScheme(
                 getColor(R.color.material_light_blue_700),
@@ -84,7 +86,6 @@ class RegisterActivity : AppCompatActivity()
 //            registerUserLayout.isEnabled = false
 //            registerPasswordLayout.isEnabled = false
 //            registerConfirmLayout.isEnabled = false
-//            //TODO("register action")
 //            registerButton.progress = 100
 //            try
 //            {
@@ -95,8 +96,6 @@ class RegisterActivity : AppCompatActivity()
 //            }
             userName = userStr
             registerAction(userStr, passwordStr)
-            finish()
-
         }
     }
 
@@ -128,7 +127,7 @@ class RegisterActivity : AppCompatActivity()
                         {
                             registerButton.progress = 100
 //                            Toast.makeText(this@RegisterActivity, "Register successfully!", Toast.LENGTH_SHORT).show()
-                            Handler().postDelayed({ toLoginActivity() }, 1000)
+                            toLoginActivity()
                         }
                     }
 
@@ -158,6 +157,6 @@ class RegisterActivity : AppCompatActivity()
         val myIntent = Intent(this, LoginActivity::class.java)
         myIntent.putExtra(getString(R.string.userName), userName)
         startActivity(myIntent)
-        finish()
+        Handler().postDelayed({ finish() }, 50)
     }
 }

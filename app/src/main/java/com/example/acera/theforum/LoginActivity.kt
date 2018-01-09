@@ -24,6 +24,8 @@ class LoginActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        title = "Login"
+
         loginButton.setMode(ActionProcessButton.Mode.ENDLESS)
         loginButton.setColorScheme(
                 getColor(R.color.material_light_blue_700),

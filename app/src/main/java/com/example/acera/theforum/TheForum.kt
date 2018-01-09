@@ -251,11 +251,25 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     {
 
                     }
-
                 }
-
-
             }
+//            resources.getInteger(R.integer.request_register) ->
+//            {
+//                when (resultCode)
+//                {
+//                    resources.getInteger(R.integer.register_success) ->
+//                    {
+//                        val myIntent = Intent(this, LoginActivity::class.java)
+//                        myIntent.putExtra(getString(R.string.userName), data!!.getStringExtra(getString(R.string.userName)))
+//                        startActivityForResult(myIntent, resources.getInteger(R.integer.request_login))
+//
+//                    }
+//                    resources.getInteger(R.integer.register_failed) ->
+//                    {
+//
+//                    }
+//                }
+//            }
         }
     }
 
@@ -538,6 +552,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             {
                 val myIntent = Intent(this, RegisterActivity::class.java)
                 startActivity(myIntent)
+//                startActivityForResult(myIntent, resources.getInteger(R.integer.request_register))
             }
             R.id.nav_login ->
             {
