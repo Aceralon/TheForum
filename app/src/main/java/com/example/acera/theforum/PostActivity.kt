@@ -88,11 +88,11 @@ class PostActivity : AppCompatActivity()
 
         recyclerAdapter!!.setOnItemClickListener(object : RecyclerAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int) {
-                TODO("not implemented")
+
             }
 
             override fun onLongClick(view: View, position: Int) {
-                if (token!!.username == "admin") {
+                if (token != null && token!!.username == "admin") {
                     val gson = Gson()
                     var message: Json.Message? = null
                     val dialog = AlertDialog.Builder(this@PostActivity).create()
