@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.Json
+import com.example.acera.theforum.Model.Json.Companion.bbcodeToSpanned
 import com.example.acera.theforum.NetworkService.ServiceFactory
 import com.google.gson.Gson
 import io.reactivex.Observer
@@ -38,10 +39,10 @@ class PostActivity : AppCompatActivity()
 
         post = intent.getSerializableExtra(getString(R.string.goto_post_detail)) as Json.Post
         token = intent.getSerializableExtra(getString(R.string.token)) as Json.Token?
-        postDetailToolbar.title = post!!.p_title
+        postDetailToolbar.title = bbcodeToSpanned(post!!.p_title!!, false)
 
 
-        postContent.text = Json.bbcodeToSpanned(post!!.p_content!!, true)
+        postContent.text = bbcodeToSpanned(post!!.p_content!!, true)
         postTime.text = post!!.p_datetime!!.substring(0, 9)
         postSender.text = post!!.username
         postReply.text = post!!.p_floor.toString()
@@ -86,13 +87,17 @@ class PostActivity : AppCompatActivity()
 
         }
 
-        recyclerAdapter!!.setOnItemClickListener(object : RecyclerAdapter.OnItemClickListener {
-            override fun onClick(view: View, position: Int) {
+        recyclerAdapter!!.setOnItemClickListener(object : RecyclerAdapter.OnItemClickListener
+        {
+            override fun onClick(view: View, position: Int)
+            {
 
             }
 
-            override fun onLongClick(view: View, position: Int) {
-                if (token != null && token!!.username == "admin") {
+            override fun onLongClick(view: View, position: Int)
+            {
+                if (token != null && token!!.username == "admin")
+                {
                     val gson = Gson()
                     var message: Json.Message? = null
                     val dialog = AlertDialog.Builder(this@PostActivity).create()
@@ -105,12 +110,15 @@ class PostActivity : AppCompatActivity()
                                 .deleteComment(Json.Comment(null, null, null, null, comments[position].cid, null, null), gson.toJson(token))
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(object : Observer<Json.Message> {
-                                    override fun onNext(t: Json.Message) {
+                                .subscribe(object : Observer<Json.Message>
+                                {
+                                    override fun onNext(t: Json.Message)
+                                    {
                                         message = t
                                     }
 
-                                    override fun onError(e: Throwable) {
+                                    override fun onError(e: Throwable)
+                                    {
                                         val dialog1 = AlertDialog.Builder(this@PostActivity).create()
                                         e.printStackTrace()
                                         dialog1.setTitle("Alert")
@@ -123,13 +131,15 @@ class PostActivity : AppCompatActivity()
                                         dialog1.show()
                                     }
 
-                                    override fun onComplete() {
+                                    override fun onComplete()
+                                    {
                                         Toast.makeText(this@PostActivity, "Deleted!", Toast.LENGTH_SHORT).show()
                                         comments.removeAt(position)
                                         recyclerAdapter!!.notifyItemRemoved(position)
                                     }
 
-                                    override fun onSubscribe(d: Disposable) {
+                                    override fun onSubscribe(d: Disposable)
+                                    {
                                         // nothing to do
                                     }
                                 })

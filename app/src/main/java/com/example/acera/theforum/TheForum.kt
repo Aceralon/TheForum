@@ -285,7 +285,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             override fun convert(holder: ViewHolder, t: Json.Post)
             {
                 holder.getView<TextView>(R.id.mainPostItemSender).text = t.username
-                holder.getView<TextView>(R.id.mainPostItemTitle).text = t.p_title
+                holder.getView<TextView>(R.id.mainPostItemTitle).text = bbcodeToSpanned(t.p_title!!, false)
                 holder.getView<TextView>(R.id.mainPostItemContent).text = bbcodeToSpanned(t.p_content!!, false)
                 holder.getView<TextView>(R.id.mainPostItemTime).text = t.p_datetime!!.substring(0, 10)
                 holder.getView<TextView>(R.id.mainPostItemReply).text = t.p_floor.toString()
