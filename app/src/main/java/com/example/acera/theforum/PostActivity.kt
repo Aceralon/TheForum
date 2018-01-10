@@ -46,7 +46,7 @@ class PostActivity : AppCompatActivity()
 
 
         postContent.text = bbcodeToSpanned(post!!.p_content!!, true)
-        postTime.text = post!!.p_datetime!!.substring(0, 9)
+        postTime.text = post!!.p_datetime!!.substring(0, 10)
         postSender.text = post!!.username
         postReply.text = post!!.p_floor.toString()
 
