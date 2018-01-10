@@ -1,15 +1,11 @@
 package com.example.acera.theforum
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -17,6 +13,7 @@ import com.example.acera.theforum.Adapter.RecyclerAdapter
 import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.Json
 import com.example.acera.theforum.Model.Json.Companion.bbcodeToSpanned
+import com.example.acera.theforum.Model.WrapContentLinearLayoutManager
 import com.example.acera.theforum.NetworkService.ServiceFactory
 import com.google.gson.Gson
 import io.reactivex.Observer
@@ -209,33 +206,6 @@ class PostActivity : AppCompatActivity()
                     }
 
                 })
-    }
-
-    inner class WrapContentLinearLayoutManager : LinearLayoutManager
-    {
-        constructor(context: Context) : super(context)
-        {
-        }
-
-        constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
-        {
-        }
-
-        constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
-        {
-        }
-
-        override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State)
-        {
-            try
-            {
-                super.onLayoutChildren(recycler, state)
-            } catch (e: IndexOutOfBoundsException)
-            {
-                e.printStackTrace()
-            }
-
-        }
     }
 }
 

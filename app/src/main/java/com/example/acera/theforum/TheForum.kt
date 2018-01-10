@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
@@ -27,6 +26,7 @@ import com.example.acera.theforum.Adapter.ViewHolder
 import com.example.acera.theforum.Model.GlideCircleTransform
 import com.example.acera.theforum.Model.Json
 import com.example.acera.theforum.Model.Json.Companion.bbcodeToSpanned
+import com.example.acera.theforum.Model.WrapContentLinearLayoutManager
 import com.example.acera.theforum.NetworkService.ServiceFactory
 import com.google.gson.Gson
 import io.reactivex.Observer
@@ -43,7 +43,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     private val postList = LinkedList<Json.Post>()
     private var recyclerAdapter: RecyclerAdapter<Json.Post>? = null
-    private val layoutManager = LinearLayoutManager(this)
+    private val layoutManager = WrapContentLinearLayoutManager(this)
     private var startItem: MenuItem? = null
     private var token: Json.Token? = null
     private var user: Json.User? = null
@@ -375,7 +375,8 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     {
                         Toast.makeText(this@TheForum, "End to Load", Toast.LENGTH_SHORT).show()
                         //加载更多 功能的代码
-                        loadPages(postList.last.p_datetime!!, 10, false)
+                        if (postList.isNotEmpty())
+                            loadPages(postList.last.p_datetime!!, 10, false)
                     }
                     //获取最后一个完全显示的ItemPosition
 //                    val lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition()
@@ -412,7 +413,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private fun loadPages(startTime: String, postsLimit: Int, newer: Boolean)
     {
         var postCnt = 0
-        var good = true
+        var clear = false
         ServiceFactory.myService.
                 getPostsByTime(Json.PostsRequest(startTime, postsLimit))
                 .subscribeOn((Schedulers.io()))
@@ -436,12 +437,16 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                         if (t.state == "1")
                         {
                             Toast.makeText(this@TheForum, t.message, Toast.LENGTH_SHORT).show()
-                            good = false
-                            onComplete()
+                            mainPostRefresh.isRefreshing = false
                         }
 
                         if (newer)
                         {
+                            if (!clear)
+                            {
+                                postList.clear()
+                                clear = true
+                            }
                             val newestTime =
                                     if (postList.isNotEmpty() && postList.first.p_datetime!! != "DD")//DEBUG only
                                         Json.timeToLong(postList.first.p_datetime!!)
@@ -466,16 +471,13 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     override fun onComplete()
                     {
                         mainPostRefresh.isRefreshing = false
-                        if (good)
+                        if (newer)
                         {
-                            if (newer)
-                            {
-                                recyclerAdapter!!.notifyItemRangeInserted(0, postCnt)
-                                layoutManager.scrollToPosition(0)
-                            } else
-                            {
-                                recyclerAdapter!!.notifyItemRangeInserted(postList.size - postCnt, postCnt)
-                            }
+                            recyclerAdapter!!.notifyItemRangeInserted(0, postCnt)
+                            layoutManager.scrollToPosition(0)
+                        } else
+                        {
+                            recyclerAdapter!!.notifyItemRangeInserted(postList.size - postCnt, postCnt)
                         }
                     }
 
@@ -495,7 +497,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     override fun onRefresh()
     {
 //        loadPages(postList.first.p_datetime!!, 10, true)
-        postList.clear()
         loadPages(Json.getCurrentTime(), 10, true)
     }
 
