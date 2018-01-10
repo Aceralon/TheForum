@@ -402,7 +402,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             }
         })
 
-        loadPages(Json.getCurrentTime(), 20, true)
+        loadPages(Json.getCurrentTime(), 10, true)
 
 //        postList.add(Json.Post("aa", "bb", "CC", "DD", 0,0)) //DEBUG ONLY
 
@@ -488,7 +488,10 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     override fun onRefresh()
     {
-        loadPages(postList.first.p_datetime!!, 10, true)
+//        loadPages(postList.first.p_datetime!!, 10, true)
+        postList.clear()
+        loadPages(Json.getCurrentTime(), 10, true)
+        recyclerAdapter!!.notifyDataSetChanged()
     }
 
     override fun onBackPressed()
