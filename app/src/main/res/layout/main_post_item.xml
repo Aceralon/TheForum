@@ -61,11 +61,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:drawableStart="@drawable/ic_post_person"
-            android:drawableTint="@color/material_grey_300"
+            android:drawableTint="@color/material_grey_400"
             android:text="Sender"
-            android:textColor="@color/material_grey_300"
+            android:textColor="@color/material_grey_400"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />
 
         <TextView
@@ -74,11 +74,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:drawableStart="@drawable/ic_post_reply_count"
-            android:drawableTint="@color/material_grey_300"
+            android:drawableTint="@color/material_grey_400"
             android:text="ResponseCnt"
-            android:textColor="@color/material_grey_300"
+            android:textColor="@color/material_grey_400"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/mainPostItemSender"
+            app:layout_constraintLeft_toRightOf="@id/mainPostItemSender"
             app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />
 
         <TextView
@@ -87,11 +87,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:drawableStart="@drawable/ic_post_date"
-            android:drawableTint="@color/material_grey_300"
+            android:drawableTint="@color/material_grey_400"
             android:text="Date"
-            android:textColor="@color/material_grey_300"
+            android:textColor="@color/material_grey_400"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/mainPostItemReply"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mainPostItemFooterLine" />
 
         <!--<View-->
