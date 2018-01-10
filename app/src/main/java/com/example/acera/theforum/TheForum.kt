@@ -412,6 +412,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private fun loadPages(startTime: String, postsLimit: Int, newer: Boolean)
     {
         var postCnt = 0
+        var good = true
         ServiceFactory.myService.
                 getPostsByTime(Json.PostsRequest(startTime, postsLimit))
                 .subscribeOn((Schedulers.io()))
@@ -435,6 +436,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                         if (t.state == "1")
                         {
                             Toast.makeText(this@TheForum, t.message, Toast.LENGTH_SHORT).show()
+                            good = false
                             onComplete()
                         }
 
@@ -455,7 +457,7 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                             }
                         } else
                         {
-                            postList.addAll(postList.size - 1, t.data!!.posts!!)
+                            postList.addAll(postList.size, t.data!!.posts!!)
                             postCnt += t.data.posts!!.size
                         }
 
@@ -464,13 +466,17 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     override fun onComplete()
                     {
                         mainPostRefresh.isRefreshing = false
-                        if (newer)
+                        if (good)
                         {
-                            recyclerAdapter!!.notifyItemRangeInserted(0, postCnt)
-                            layoutManager.scrollToPosition(0)
-                        } else
-                            recyclerAdapter!!.notifyItemRangeInserted(postList.size - postCnt, postCnt)
-
+                            if (newer)
+                            {
+                                recyclerAdapter!!.notifyItemRangeInserted(0, postCnt)
+                                layoutManager.scrollToPosition(0)
+                            } else
+                            {
+                                recyclerAdapter!!.notifyItemRangeInserted(postList.size - postCnt, postCnt)
+                            }
+                        }
                     }
 
                 })
@@ -491,7 +497,6 @@ class TheForum : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 //        loadPages(postList.first.p_datetime!!, 10, true)
         postList.clear()
         loadPages(Json.getCurrentTime(), 10, true)
-        recyclerAdapter!!.notifyDataSetChanged()
     }
 
     override fun onBackPressed()
